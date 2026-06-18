@@ -72,26 +72,15 @@ db.exec(`
   );
 `);
 
-// Seed a couple of example events the first time the DB is created so the
-// landing page isn't empty before the admin adds real ones.
+// Seed one example special event the first time the DB is created so the
+// landing page isn't empty. The weekly Wednesday/Saturday services are NOT
+// seeded here — they are generated automatically from the calendar in
+// routes/events.js so their dates always stay current.
 const eventCount = db.prepare('SELECT COUNT(*) AS n FROM events').get().n;
 if (eventCount === 0) {
-  const insert = db.prepare(
+  db.prepare(
     'INSERT INTO events (title, starts_at, location, description) VALUES (?, ?, ?, ?)'
-  );
-  insert.run(
-    'Wednesday Miracle Service',
-    '2026-06-24T19:00',
-    'Main Sanctuary',
-    'A mid-week gathering for prophetic ministry, healing, and miracles.'
-  );
-  insert.run(
-    'Saturday Prayer Service',
-    '2026-06-27T07:00',
-    'Prayer Hall',
-    'Early-morning corporate prayer and intercession for families and nations.'
-  );
-  insert.run(
+  ).run(
     'Three Day Fasting & Prayer',
     '2026-07-01T18:00',
     'Online + Onsite',
