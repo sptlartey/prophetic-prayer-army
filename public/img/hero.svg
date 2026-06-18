@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="field" cx="50%" cy="58%" r="75%">
+      <stop offset="0" stop-color="#1f5e2c"/>
+      <stop offset="0.55" stop-color="#123f1d"/>
+      <stop offset="1" stop-color="#08230f"/>
+    </radialGradient>
+    <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#57c83a" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#57c83a" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#field)"/>
+  <!-- radar grid -->
+  <g stroke="#3a8f44" stroke-width="1.4" opacity="0.35" fill="none">
+    <line x1="0" y1="200" x2="1600" y2="200"/>
+    <line x1="0" y1="400" x2="1600" y2="400"/>
+    <line x1="0" y1="600" x2="1600" y2="600"/>
+    <line x1="0" y1="800" x2="1600" y2="800"/>
+    <line x1="200" y1="0" x2="200" y2="1000"/>
+    <line x1="500" y1="0" x2="500" y2="1000"/>
+    <line x1="800" y1="0" x2="800" y2="1000"/>
+    <line x1="1100" y1="0" x2="1100" y2="1000"/>
+    <line x1="1400" y1="0" x2="1400" y2="1000"/>
+  </g>
+  <!-- radar rings -->
+  <g stroke="#57c83a" fill="none" opacity="0.45">
+    <circle cx="800" cy="520" r="180" stroke-width="2"/>
+    <circle cx="800" cy="520" r="340" stroke-width="2"/>
+    <circle cx="800" cy="520" r="500" stroke-width="2"/>
+  </g>
+  <!-- radar sweep wedge -->
+  <path d="M800 520 L800 20 A500 500 0 0 1 1180 230 Z" fill="url(#sweep)"/>
+  <!-- silhouettes of an army with raised hands -->
+  <g fill="#0a1f0c" opacity="0.85">
+    <path d="M560 1000 q-10-120 20-200 q5-50 -10-110 q20 5 30 50 q5-70 25-70 q18 0 20 70 q12-45 30-40 q15 5 5 70 q25-30 38-10 q10 18 -18 70 q20 60 8 170 Z"/>
+    <path d="M780 1000 q-12-140 18-220 q6-55 -12-120 q22 6 33 55 q6-80 27-80 q20 0 22 80 q13-50 33-45 q16 6 5 80 q27-35 41-12 q11 20 -19 80 q22 70 9 200 Z"/>
+    <path d="M1020 1000 q-10-120 20-200 q5-50 -10-110 q20 5 30 50 q5-70 25-70 q18 0 20 70 q12-45 30-40 q15 5 5 70 q25-30 38-10 q10 18 -18 70 q20 60 8 170 Z"/>
+  </g>
+  <text x="50%" y="92%" text-anchor="middle" fill="#bfe8b0" font-family="Georgia, serif" font-size="34" opacity="0.22">Replace with your own photo</text>
+</svg>

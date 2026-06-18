@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Message Library — The Prophetic Prayer Army</title>
+  <meta name="description" content="The full library of services from The Prophetic Prayer Army, organized by Wednesday Miracle Service, Saturday Prayer Service, and Three Day Fasting & Prayer." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="/img/logo.png" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="/">
+        <img class="logo-img" src="/img/logo.png" alt="Prophetic Prayer Army logo" />
+        <span>The Prophetic Prayer Army<small>House of Prayer</small></span>
+      </a>
+      <button class="nav-toggle" aria-label="Menu" id="navToggle">&#9776;</button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/#about">About</a></li>
+        <li><a href="/#services">Services</a></li>
+        <li><a href="/#events">Events</a></li>
+        <li><a href="/sermons.html">Watch</a></li>
+        <li><a href="/#prayer">Prayer</a></li>
+        <li><a href="/#give">Give</a></li>
+        <li><a href="/#contact">Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <section class="section section--deep">
+    <div class="container center">
+      <p class="eyebrow">Watch &amp; Listen</p>
+      <h2>Message Library</h2>
+      <p class="lead">Every service, organized by gathering. New messages are added automatically as they are published.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div id="videoLibrary" data-full="true">
+        <p class="center empty-note">Loading messages&hellip;</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        &copy; <span id="year"></span> The Prophetic Prayer Army. &nbsp;<a href="/" style="display:inline;color:var(--gold)">Back to home</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+  <script src="/js/main.js"></script>
+</body>
+</html>

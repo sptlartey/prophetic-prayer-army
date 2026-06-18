@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — The Prophetic Prayer Army</title>
+  <link rel="icon" type="image/png" href="/img/logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --gold:#1f7a34; --gold-dark:#145c27; --ink:#16240f; --line:#d6e3cd; --muted:#5d6a55; --cream:#eef4e9; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:'Inter',system-ui,sans-serif; background:var(--cream); color:var(--ink); }
+    a { color: var(--gold-dark); }
+    .topbar { background:#0f3a1b; color:#fff; padding:14px 24px; display:flex; justify-content:space-between; align-items:center; }
+    .topbar .brand { display:flex; align-items:center; gap:12px; }
+    .topbar .brand img { width:40px; height:40px; object-fit:contain; background:#fff; border-radius:50%; padding:3px; }
+    .topbar .title { font-weight:700; letter-spacing:.02em; }
+    .topbar .title small { display:block; font-weight:400; font-size:.7rem; letter-spacing:.2em; text-transform:uppercase; color:#bcae99; }
+    .wrap { max-width:1080px; margin:0 auto; padding:28px 24px 80px; }
+    .btn { background:var(--gold); color:#fff; border:0; border-radius:4px; padding:10px 18px; font-weight:600; cursor:pointer; font-size:.9rem; }
+    .btn:hover { background:var(--gold-dark); }
+    .btn.secondary { background:#fff; color:var(--ink); border:1px solid var(--line); }
+    .btn.danger { background:#b3261e; }
+    .btn.small { padding:6px 12px; font-size:.8rem; }
+    input, textarea, select { font-family:inherit; font-size:.95rem; padding:10px 12px; border:1px solid var(--line); border-radius:4px; width:100%; background:#fff; }
+    label { font-size:.8rem; font-weight:600; display:block; margin-bottom:5px; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:8px; padding:22px; margin-bottom:22px; }
+    .tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:22px; }
+    .tab { padding:9px 16px; border-radius:30px; background:#fff; border:1px solid var(--line); cursor:pointer; font-weight:600; font-size:.85rem; }
+    .tab.active { background:var(--ink); color:#fff; border-color:var(--ink); }
+    table { width:100%; border-collapse:collapse; font-size:.9rem; }
+    th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+    th { font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
+    .row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .muted { color:var(--muted); }
+    .pill { display:inline-block; padding:3px 10px; border-radius:20px; font-size:.72rem; font-weight:600; }
+    .pill.open { background:#fdeccd; color:#915e0e; }
+    .pill.praying { background:#dceafb; color:#1c5da8; }
+    .pill.answered { background:#d8f0d9; color:#2e7d32; }
+    .hidden { display:none; }
+    .login { max-width:380px; margin:80px auto; }
+    h1 { font-size:1.5rem; } h2 { font-size:1.2rem; margin-top:0; }
+    .flex { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .stack > * + * { margin-top:12px; }
+    .toolbar { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px; flex-wrap:wrap; }
+    .note { font-size:.85rem; padding:10px 12px; border-radius:6px; background:#fdeccd; color:#915e0e; }
+    @media (max-width:640px){ .row{ grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">
+      <img src="/img/logo.png" alt="Prophetic Prayer Army logo" />
+      <div class="title">The Prophetic Prayer Army <small>Admin Dashboard</small></div>
+    </div>
+    <div class="flex">
+      <a href="/" style="color:#fff;font-size:.85rem;">View site ↗</a>
+      <button class="btn small secondary" id="logoutBtn">Log out</button>
+    </div>
+  </div>
+
+  <!-- Login -->
+  <div class="wrap login" id="loginView">
+    <div class="card">
+      <h1>Admin Login</h1>
+      <p class="muted">Enter the admin password to manage the ministry site.</p>
+      <div class="stack">
+        <div>
+          <label for="pw">Password</label>
+          <input type="password" id="pw" />
+        </div>
+        <button class="btn" id="loginBtn">Log in</button>
+        <p class="muted" id="loginMsg" style="min-height:1.2em;"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="wrap hidden" id="dashView">
+    <div class="tabs">
+      <div class="tab active" data-tab="prayer">Prayer Requests</div>
+      <div class="tab" data-tab="events">Events</div>
+      <div class="tab" data-tab="videos">Videos</div>
+      <div class="tab" data-tab="members">Members</div>
+      <div class="tab" data-tab="contacts">Messages</div>
+      <div class="tab" data-tab="donations">Giving</div>
+    </div>
+
+    <!-- Prayer -->
+    <section class="tabpane" data-pane="prayer">
+      <div class="card">
+        <div class="toolbar"><h2>Prayer Requests</h2></div>
+        <table><thead><tr><th>When</th><th>From</th><th>Request</th><th>Status</th></tr></thead>
+          <tbody id="prayerRows"></tbody></table>
+      </div>
+    </section>
+
+    <!-- Events -->
+    <section class="tabpane hidden" data-pane="events">
+      <div class="card">
+        <h2 id="eventFormTitle">Add Event</h2>
+        <form id="eventForm" class="stack">
+          <input type="hidden" id="ev-id" />
+          <div class="row">
+            <div><label for="ev-title">Title *</label><input id="ev-title" required /></div>
+            <div><label for="ev-when">Date &amp; time *</label><input id="ev-when" type="datetime-local" required /></div>
+          </div>
+          <div class="row">
+            <div><label for="ev-loc">Location</label><input id="ev-loc" /></div>
+            <div><label for="ev-desc">Description</label><input id="ev-desc" /></div>
+          </div>
+          <div class="flex">
+            <button class="btn" type="submit">Save Event</button>
+            <button class="btn secondary hidden" type="button" id="ev-cancel">Cancel edit</button>
+          </div>
+        </form>
+      </div>
+      <div class="card">
+        <h2>Upcoming Events</h2>
+        <table><thead><tr><th>When</th><th>Title</th><th>Location</th><th></th></tr></thead>
+          <tbody id="eventRows"></tbody></table>
+      </div>
+    </section>
+
+    <!-- Videos -->
+    <section class="tabpane hidden" data-pane="videos">
+      <div class="card">
+        <div class="toolbar">
+          <h2>Video Library</h2>
+          <button class="btn" id="refreshVideos">↻ Refresh from YouTube</button>
+        </div>
+        <p class="muted" id="videoHint">Videos auto-sort by title and date. Use the dropdown to manually reassign any that landed in the wrong category. Choose "(auto)" to revert to the automatic guess.</p>
+        <div id="videoNote"></div>
+        <table><thead><tr><th>Published</th><th>Title</th><th>Auto</th><th>Category (override)</th></tr></thead>
+          <tbody id="videoRows"></tbody></table>
+      </div>
+    </section>
+
+    <!-- Members -->
+    <section class="tabpane hidden" data-pane="members">
+      <div class="card">
+        <h2>Members</h2>
+        <table><thead><tr><th>When</th><th>Name</th><th>Email</th><th>Phone</th></tr></thead>
+          <tbody id="memberRows"></tbody></table>
+      </div>
+    </section>
+
+    <!-- Contacts -->
+    <section class="tabpane hidden" data-pane="contacts">
+      <div class="card">
+        <h2>Messages</h2>
+        <table><thead><tr><th>When</th><th>Name</th><th>Email</th><th>Message</th></tr></thead>
+          <tbody id="contactRows"></tbody></table>
+      </div>
+    </section>
+
+    <!-- Donations -->
+    <section class="tabpane hidden" data-pane="donations">
+      <div class="card">
+        <h2>Giving Records</h2>
+        <table><thead><tr><th>When</th><th>Amount</th><th>Donor</th><th>Status</th></tr></thead>
+          <tbody id="donationRows"></tbody></table>
+      </div>
+    </section>
+  </div>
+
+  <script src="/admin/admin.js"></script>
+</body>
+</html>
