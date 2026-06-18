@@ -29,6 +29,9 @@ app.use(donationRoutes);
 app.use(podcastRoutes);
 app.use(adminRoutes);
 
+// Health check — responds instantly so Railway knows the app is ready.
+app.get('/health', (req, res) => res.status(200).json({ status: 'ok' }));
+
 // Static frontend
 app.use(express.static(join(__dirname, 'public')));
 

@@ -71,6 +71,7 @@ async function loadEvents() {
           </div>
         </article>`;
     }).join('');
+    revealInit();
   } catch {
     list.innerHTML = '<p class="center empty-note">Could not load events.</p>';
   }
@@ -97,30 +98,53 @@ function videoCard(v) {
     </article>`;
 }
 
+const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
 async function loadVideos() {
   const lib = $('#videoLibrary');
   if (!lib) return;
+  const isFull = lib.dataset.full === 'true';
+  // A service tile may link here with ?category=... to show just that service.
+  const wanted = new URLSearchParams(location.search).get('category');
+  const activeCat = wanted && CATEGORY_ORDER.includes(wanted) ? wanted : null;
+
   try {
     const res = await fetch('/api/videos');
     const groups = await res.json();
-    const sections = CATEGORY_ORDER
-      .filter((cat) => (groups[cat] || []).length)
-      .map((cat) => {
-        // On the homepage show the 3 most recent per category; full library shows all.
-        const limit = lib.dataset.full === 'true' ? Infinity : 3;
-        const vids = groups[cat].slice(0, limit);
-        return `
-          <div class="video-cat">
-            <h3>${cat}</h3>
-            <div class="video-grid">${vids.map(videoCard).join('')}</div>
-          </div>`;
-      });
+    let order = CATEGORY_ORDER.filter((cat) => (groups[cat] || []).length);
+
+    // Filtered view (sermons page reached from a service tile): only that service.
+    if (activeCat) order = order.filter((cat) => cat === activeCat);
+
+    const sections = order.map((cat) => {
+      // Homepage shows the 3 most recent per category; full library shows all.
+      const limit = isFull ? Infinity : 3;
+      const vids = groups[cat].slice(0, limit);
+      // On the homepage, the heading links to that service's full video list.
+      const heading = isFull
+        ? cat
+        : `<a href="/sermons.html?category=${encodeURIComponent(cat)}">${cat}</a>`;
+      return `
+        <div class="video-cat reveal" id="cat-${slugify(cat)}">
+          <h3>${heading}</h3>
+          <div class="video-grid">${vids.map(videoCard).join('')}</div>
+        </div>`;
+    });
+
+    // Banner when filtered to a single service.
+    const banner = activeCat
+      ? `<div class="filter-banner reveal">
+           <strong>${activeCat}</strong>
+           <a href="/sermons.html">&larr; View all services</a>
+         </div>`
+      : '';
 
     if (!sections.length) {
-      lib.innerHTML = '<p class="center empty-note">No messages have been published yet. Connect a YouTube channel in the admin to populate this section.</p>';
+      lib.innerHTML = banner + '<p class="center empty-note">No messages in this service yet. Check back soon.</p>';
+      revealInit();
       return;
     }
-    lib.innerHTML = sections.join('');
+    lib.innerHTML = banner + sections.join('');
 
     // Click-to-play: swap thumbnail for an embedded player.
     $$('.thumb', lib).forEach((thumb) => {
@@ -130,6 +154,8 @@ async function loadVideos() {
         thumb.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1" title="Video player" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
       });
     });
+
+    revealInit();
   } catch {
     lib.innerHTML = '<p class="center empty-note">Could not load messages.</p>';
   }
@@ -209,6 +235,43 @@ function escapeHtml(str = '') {
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
+// --- Scroll-reveal animations (IntersectionObserver) ---
+let revealObserver;
+function revealInit() {
+  if (!('IntersectionObserver' in window)) return;
+  if (!revealObserver) {
+    revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  }
+  // Tag the things worth animating once, then observe any not yet seen.
+  $$('.card, .split > *, .event, .video-cat, .filter-banner, .section > .container > .center')
+    .forEach((el) => {
+      if (!el.classList.contains('reveal')) el.classList.add('reveal');
+      if (!el.dataset.revObserved) { el.dataset.revObserved = '1'; revealObserver.observe(el); }
+    });
+}
+
+// --- Back-to-top button (injected so it works on every page) ---
+function initBackToTop() {
+  const btn = document.createElement('button');
+  btn.className = 'to-top';
+  btn.setAttribute('aria-label', 'Back to top');
+  btn.innerHTML = '&uarr;';
+  document.body.appendChild(btn);
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  const onScroll = () => {
+    btn.classList.toggle('show', window.scrollY > 500);
+    $('.site-header')?.classList.toggle('scrolled', window.scrollY > 10);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+}
+
 // --- Init ---
+initBackToTop();
+revealInit();
 loadEvents();
 loadVideos();

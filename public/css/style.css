@@ -221,6 +221,121 @@ a { color: var(--gold-dark); text-decoration: none; }
 .toast.show { transform: translateX(-50%) translateY(0); }
 .toast.err { background: #8d2a22; }
 
+/* ============================================================
+   Interactivity: hovers, clicks, scroll reveals
+   ============================================================ */
+
+/* Cards lift and glow on hover */
+.card {
+  transition: transform .28s cubic-bezier(.2,.7,.3,1), box-shadow .28s ease, border-color .28s ease;
+  will-change: transform;
+}
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 22px 50px rgba(15, 40, 20, 0.22);
+  border-color: var(--gold);
+}
+
+/* Value-card icons pop on hover */
+.card .icon { transition: transform .3s ease; display: inline-block; }
+.card:hover .icon { transform: scale(1.18) rotate(-4deg); }
+
+/* Clickable service tiles */
+a.tile {
+  display: flex; flex-direction: column; align-items: flex-start;
+  text-decoration: none; color: var(--ink); position: relative; overflow: hidden;
+  cursor: pointer;
+}
+a.tile::before {
+  content: ''; position: absolute; left: 0; top: 0; height: 4px; width: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--radar));
+  transform: scaleX(0); transform-origin: left; transition: transform .35s ease;
+}
+a.tile:hover::before { transform: scaleX(1); }
+.tile-icon {
+  font-size: 2.2rem; margin-bottom: 10px; transition: transform .3s ease;
+}
+a.tile:hover .tile-icon { transform: scale(1.2) translateY(-2px); }
+.tile h3 { transition: color .25s ease; }
+a.tile:hover h3 { color: var(--gold-dark); }
+.tile p { color: var(--muted); }
+.tile-cta {
+  margin-top: auto; padding-top: 14px;
+  font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--gold-dark); display: inline-flex; align-items: center; gap: 8px;
+}
+.tile-cta em { font-style: normal; transition: transform .25s ease; display: inline-block; }
+a.tile:hover .tile-cta em { transform: translateX(6px); }
+
+/* Buttons: lift + press */
+.btn { transition: background .2s ease, border-color .2s ease, transform .12s ease, box-shadow .2s ease; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(20, 92, 39, 0.28); }
+.btn:active { transform: translateY(0) scale(.97); box-shadow: none; }
+
+/* Nav links: animated underline */
+.nav-links a { position: relative; }
+.nav-links a::after {
+  content: ''; position: absolute; left: 0; bottom: -4px; height: 2px; width: 100%;
+  background: var(--gold); transform: scaleX(0); transform-origin: right; transition: transform .28s ease;
+}
+.nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+/* Header gains a shadow once you scroll */
+.site-header { transition: box-shadow .3s ease, background .3s ease; }
+.site-header.scrolled { box-shadow: 0 6px 22px rgba(15, 40, 20, 0.12); }
+
+/* Brand logo subtle spin-pop on hover */
+.brand .logo-img { transition: transform .4s ease; }
+.brand:hover .logo-img { transform: rotate(8deg) scale(1.06); }
+
+/* Event rows slide on hover */
+.event { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+.event:hover { transform: translateX(6px); border-color: var(--gold); box-shadow: var(--shadow); }
+
+/* Video cards: lift + image zoom */
+.video { transition: transform .28s ease, box-shadow .28s ease; }
+.video:hover { transform: translateY(-6px); box-shadow: 0 20px 44px rgba(0,0,0,.3); }
+.video .thumb img { transition: transform .5s ease; }
+.video:hover .thumb img { transform: scale(1.07); }
+.video .thumb::after { transition: background .25s ease, transform .25s ease; }
+.video:hover .thumb::after { background: rgba(20,92,39,.4); transform: scale(1.06); }
+
+/* Amount chips */
+.amount-row .chip { transition: transform .15s ease, background .2s ease, border-color .2s ease, color .2s ease; }
+.amount-row .chip:hover { transform: translateY(-2px); border-color: var(--gold); }
+
+/* Scroll-reveal animation */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.3,1); }
+.reveal.visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  * { scroll-behavior: auto !important; }
+}
+
+/* Back-to-top button */
+.to-top {
+  position: fixed; right: 24px; bottom: 24px; z-index: 80;
+  width: 50px; height: 50px; border-radius: 50%; border: 0; cursor: pointer;
+  background: var(--gold); color: #fff; font-size: 1.3rem; line-height: 1;
+  box-shadow: 0 10px 26px rgba(20,92,39,.35);
+  opacity: 0; visibility: hidden; transform: translateY(16px);
+  transition: opacity .3s ease, transform .3s ease, background .2s ease, visibility .3s;
+}
+.to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
+.to-top:hover { background: var(--gold-dark); transform: translateY(-3px) scale(1.05); }
+.to-top:active { transform: scale(.92); }
+
+/* Category filter banner on the sermons page */
+.filter-banner {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  background: var(--cream); border: 1px solid var(--line); border-left: 4px solid var(--gold);
+  border-radius: 6px; padding: 16px 22px; margin-bottom: 36px;
+}
+.filter-banner strong { font-family: var(--serif); font-size: 1.3rem; color: var(--gold-dark); }
+.filter-banner a { font-weight: 600; font-size: .85rem; }
+.video-cat h3 a { color: inherit; text-decoration: none; transition: color .2s ease; }
+.video-cat h3 a:hover { color: var(--radar); }
+
 /* Responsive */
 @media (max-width: 880px) {
   .grid-3, .video-grid { grid-template-columns: 1fr 1fr; }
