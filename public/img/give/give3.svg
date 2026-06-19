@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="800" viewBox="0 0 1000 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="g3" cx="50%" cy="55%" r="80%">
+      <stop offset="0" stop-color="#2a7d3b"/><stop offset="0.6" stop-color="#15521f"/><stop offset="1" stop-color="#08260f"/>
+    </radialGradient>
+  </defs>
+  <rect width="1000" height="800" fill="url(#g3)"/>
+  <!-- rising sun rays -->
+  <g opacity="0.18" stroke="#9cdb7f" stroke-width="3">
+    <line x1="500" y1="360" x2="120" y2="120"/><line x1="500" y1="360" x2="500" y2="40"/><line x1="500" y1="360" x2="880" y2="120"/>
+    <line x1="500" y1="360" x2="60" y2="360"/><line x1="500" y1="360" x2="940" y2="360"/>
+  </g>
+  <!-- raised hands silhouettes -->
+  <g fill="#0a2410" opacity="0.85">
+    <path d="M250 800q-15-150 25-250 6-60-14-130 26 8 38 64 8-86 32-86 24 0 26 86 15-58 38-50 18 6 6 86 30-38 48-14 12 22-22 86 26 70 12 208Z"/>
+    <path d="M520 800q-18-170 28-280 7-66-16-150 30 9 44 72 9-96 36-96 27 0 30 96 17-66 44-58 20 7 6 96 34-42 54-16 14 24-24 96 30 80 14 240Z"/>
+    <path d="M760 800q-15-150 25-250 6-60-14-130 26 8 38 64 8-86 32-86 24 0 26 86 15-58 38-50 18 6 6 86 30-38 48-14 12 22-22 86 26 70 12 208Z"/>
+  </g>
+  <text x="500" y="730" text-anchor="middle" fill="#eaf6e2" font-family="Georgia, serif" font-size="44" font-style="italic">Bless the nations</text>
+  <text x="500" y="775" text-anchor="middle" fill="#9ccb8c" font-family="Arial, sans-serif" font-size="20" letter-spacing="3">REPLACE WITH YOUR OWN PHOTO</text>
+</svg>

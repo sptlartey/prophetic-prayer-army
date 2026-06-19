@@ -197,7 +197,16 @@
   <!-- Give -->
   <section class="section section--cream" id="give">
     <div class="container split">
-      <div class="media" role="img" aria-label="Giving"></div>
+      <div class="carousel" id="giveCarousel" aria-roledescription="carousel" aria-label="Giving">
+        <div class="carousel-slides">
+          <div class="slide active" role="img" aria-label="Sow into the work" style="background-image:url('/img/give/give1.svg')"></div>
+          <div class="slide" role="img" aria-label="Give cheerfully" style="background-image:url('/img/give/give2.svg')"></div>
+          <div class="slide" role="img" aria-label="Bless the nations" style="background-image:url('/img/give/give3.svg')"></div>
+        </div>
+        <button class="carousel-arrow prev" type="button" aria-label="Previous slide">&#8249;</button>
+        <button class="carousel-arrow next" type="button" aria-label="Next slide">&#8250;</button>
+        <div class="carousel-dots" id="giveDots"></div>
+      </div>
       <div>
         <p class="eyebrow">Sow Into the Work</p>
         <h2>Give an offering</h2>

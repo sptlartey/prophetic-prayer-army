@@ -290,7 +290,54 @@ function initBackToTop() {
   onScroll();
 }
 
+// --- Giving carousel / slideshow ---
+function initCarousel() {
+  const carousel = $('#giveCarousel');
+  if (!carousel) return;
+  const slides = $$('.slide', carousel);
+  const dotsWrap = $('#giveDots');
+  if (slides.length < 2) return;
+
+  let index = 0;
+  let timer;
+  const INTERVAL = 5000; // 5 seconds per slide
+
+  // Build a dot for each slide.
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+    dot.type = 'button';
+    dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+    dot.addEventListener('click', () => { go(i); restart(); });
+    dotsWrap?.appendChild(dot);
+  });
+  const dots = dotsWrap ? $$('.carousel-dot', dotsWrap) : [];
+
+  function go(n) {
+    slides[index].classList.remove('active');
+    dots[index]?.classList.remove('active');
+    index = (n + slides.length) % slides.length;
+    slides[index].classList.add('active');
+    dots[index]?.classList.add('active');
+  }
+  const next = () => go(index + 1);
+  const prev = () => go(index - 1);
+  function start() { timer = setInterval(next, INTERVAL); }
+  function restart() { clearInterval(timer); start(); }
+
+  $('.carousel-arrow.next', carousel)?.addEventListener('click', () => { next(); restart(); });
+  $('.carousel-arrow.prev', carousel)?.addEventListener('click', () => { prev(); restart(); });
+  // Pause while the visitor is hovering or focusing the carousel.
+  carousel.addEventListener('mouseenter', () => clearInterval(timer));
+  carousel.addEventListener('mouseleave', start);
+  carousel.addEventListener('focusin', () => clearInterval(timer));
+  carousel.addEventListener('focusout', start);
+
+  start();
+}
+
 // --- Init ---
+initCarousel();
 initBackToTop();
 revealInit();
 loadEvents();
