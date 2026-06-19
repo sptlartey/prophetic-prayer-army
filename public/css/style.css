@@ -325,6 +325,9 @@ a.tile:hover .tile-cta em { transform: translateX(6px); }
 .to-top:hover { background: var(--gold-dark); transform: translateY(-3px) scale(1.05); }
 .to-top:active { transform: scale(.92); }
 
+/* Utility */
+.hidden { display: none !important; }
+
 /* PayPal giving button + divider */
 .btn-paypal {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
