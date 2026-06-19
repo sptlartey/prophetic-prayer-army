@@ -223,6 +223,26 @@ $('#giveForm')?.addEventListener('submit', async (e) => {
   }
 });
 
+// --- PayPal giving: redirect to paypal.me with the entered amount ---
+const PAYPAL_ME = 'https://www.paypal.me/AgyaAcheampong';
+$('#paypalBtn')?.addEventListener('click', () => {
+  const amt = parseFloat($('#g-amount')?.value);
+  const valid = Number.isFinite(amt) && amt >= 1;
+  const url = valid ? `${PAYPAL_ME}/${Math.round(amt * 100) / 100}` : PAYPAL_ME;
+  // Log the gift intent for the admin (fire-and-forget — never blocks the redirect).
+  if (valid) {
+    const f = $('#giveForm');
+    fetch('/api/donate/paypal', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: amt, name: f?.name.value, email: f?.email.value }),
+      keepalive: true,
+    }).catch(() => {});
+  }
+  setMsg('giveMsg', 'Opening PayPal in a new tab — thank you for your gift! 🙌');
+  window.open(url, '_blank', 'noopener');
+});
+
 // Show a note if returning from Stripe.
 const params = new URLSearchParams(location.search);
 if (params.get('giving') === 'success') toast('Thank you for your generous offering! 🙌');

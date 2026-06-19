@@ -14,12 +14,26 @@ if (key) {
 }
 
 const insertDonation = db.prepare(
-  `INSERT INTO donations (amount_cents, currency, donor_name, donor_email, stripe_session, status)
-   VALUES (?, ?, ?, ?, ?, ?)`
+  `INSERT INTO donations (amount_cents, currency, donor_name, donor_email, stripe_session, status, method)
+   VALUES (?, ?, ?, ?, ?, ?, 'card')`
+);
+
+const insertPaypal = db.prepare(
+  `INSERT INTO donations (amount_cents, currency, donor_name, donor_email, status, method)
+   VALUES (?, 'usd', ?, ?, 'pending', 'paypal')`
 );
 
 router.get('/api/giving/status', (req, res) => {
   res.json({ configured: Boolean(stripe) });
+});
+
+// Records a PayPal gift intent (the actual payment happens on paypal.me).
+router.post('/api/donate/paypal', (req, res) => {
+  const { amount, name, email } = req.body || {};
+  const dollars = Number(amount);
+  const cents = dollars >= 1 ? Math.round(dollars * 100) : 0;
+  insertPaypal.run(cents, name?.trim() || null, email?.trim() || null);
+  res.status(201).json({ ok: true });
 });
 
 router.post('/api/donate', async (req, res) => {

@@ -72,6 +72,13 @@ db.exec(`
   );
 `);
 
+// Migration: track which method a gift used (card | paypal). Safe to run on
+// every boot — only adds the column if it isn't there yet.
+const donationCols = db.prepare('PRAGMA table_info(donations)').all().map((c) => c.name);
+if (!donationCols.includes('method')) {
+  db.exec("ALTER TABLE donations ADD COLUMN method TEXT DEFAULT 'card'");
+}
+
 // Seed one example special event the first time the DB is created so the
 // landing page isn't empty. The weekly Wednesday/Saturday services are NOT
 // seeded here — they are generated automatically from the calendar in

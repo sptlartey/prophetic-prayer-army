@@ -171,9 +171,10 @@ async function loadDonations() {
   const { body } = await api('/api/admin/donations');
   $('#donationRows').innerHTML = (body || []).map((d) => `
     <tr><td class="muted">${when(d.created_at)}</td><td>$${(d.amount_cents / 100).toFixed(2)}</td>
+    <td><span class="pill ${d.method === 'paypal' ? 'praying' : 'open'}">${esc(d.method || 'card')}</span></td>
     <td>${esc(d.donor_name || 'Anonymous')}${d.donor_email ? `<br><span class="muted">${esc(d.donor_email)}</span>` : ''}</td>
     <td><span class="pill ${d.status === 'completed' ? 'answered' : 'open'}">${esc(d.status)}</span></td></tr>`)
-    .join('') || '<tr><td colspan="4" class="muted">No giving records yet.</td></tr>';
+    .join('') || '<tr><td colspan="5" class="muted">No giving records yet.</td></tr>';
 }
 
 // --- Boot ---

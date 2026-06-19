@@ -325,6 +325,20 @@ a.tile:hover .tile-cta em { transform: translateX(6px); }
 .to-top:hover { background: var(--gold-dark); transform: translateY(-3px) scale(1.05); }
 .to-top:active { transform: scale(.92); }
 
+/* PayPal giving button + divider */
+.btn-paypal {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  background: #ffc439; color: #003087; border-color: #ffc439; width: 100%;
+}
+.btn-paypal svg { width: 18px; height: 18px; fill: #003087; }
+.btn-paypal:hover { background: #f0b72f; border-color: #f0b72f; color: #002868; box-shadow: 0 8px 20px rgba(0,48,135,.25); }
+.give-or {
+  display: flex; align-items: center; gap: 12px; margin: 4px 0;
+  color: var(--muted); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+}
+.give-or::before, .give-or::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.giveForm .btn, #giveForm .btn { width: 100%; }
+
 /* Social media icons (Join the army + footer) */
 .join-social { margin: 22px 0 26px; }
 .join-social-label {
