@@ -347,8 +347,14 @@ a.tile:hover .tile-cta em { transform: translateX(6px); }
 .social-instagram:hover { background: #E1306C; border-color: #E1306C; }
 .social-youtube:hover   { background: #FF0000; border-color: #FF0000; }
 
-/* Footer variant on the dark background */
-.site-footer .social-icon { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.16); }
+/* Footer variant on the dark background.
+   Re-assert grid centering here: the generic ".site-footer a { display:block }"
+   rule is more specific than ".social-icon" and would otherwise knock the glyph
+   off-center, so we restore display:grid + centering with a footer-scoped rule. */
+.site-footer .social-icon {
+  display: grid; place-items: center; margin: 0;
+  background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.2);
+}
 .site-footer .social-icon svg { fill: #e7ddcd; }
 
 /* Category filter banner on the sermons page */
