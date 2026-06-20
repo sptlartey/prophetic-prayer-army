@@ -5,10 +5,15 @@ import db from '../db.js';
 
 export const CATEGORIES = {
   WEDNESDAY: 'Wednesday Miracle Service',
-  SATURDAY: 'Saturday Prayer Service',
+  SATURDAY: 'Hour of Liberation',
   FASTING: 'Three Day Fasting & Prayer',
   UNCATEGORIZED: 'Uncategorized',
 };
+
+// One-time rename of the Saturday video folder → "Hour of Liberation".
+// Idempotent: only matches the old label, so it's a no-op after the first run.
+db.prepare("UPDATE videos SET auto_category = 'Hour of Liberation' WHERE auto_category = 'Saturday Prayer Service'").run();
+db.prepare("UPDATE videos SET category_override = 'Hour of Liberation' WHERE category_override = 'Saturday Prayer Service'").run();
 
 // Decide a category from the video title first, then fall back to the weekday
 // it was published. Returns one of the CATEGORIES values.

@@ -92,6 +92,10 @@ async function loadEvents() {
     }
     list.innerHTML = events.map((e) => {
       const b = etBadge(e.start);
+      const calSingle = e.recurring
+        ? `/api/calendar.ics?key=${e.key}&mode=single&start=${encodeURIComponent(e.start)}`
+        : `/api/calendar.ics?dbid=${(e.id || '').replace('db-', '')}`;
+      const calSeries = e.recurring ? `/api/calendar.ics?key=${e.key}` : '';
       return `
         <article class="event ${e.cancelled ? 'cancelled-card' : ''}"
                  data-start="${new Date(e.start).getTime()}"
@@ -109,12 +113,26 @@ async function loadEvents() {
             ${e.description ? `<p class="event-desc">${escapeHtml(e.description)}</p>` : ''}
             <div class="event-foot">
               <span class="event-countdown" data-countdown></span>
+              <div class="event-cal">
+                <button type="button" class="btn btn--sm btn--ghost cal-btn" data-cal>Add to Calendar &#9662;</button>
+                <div class="cal-menu" hidden>
+                  <a href="${calSingle}" download="prophetic-prayer-army.ics">&#128197;&nbsp; This event only</a>
+                  ${calSeries ? `<a href="${calSeries}" download="prophetic-prayer-army.ics">&#128260;&nbsp; Add the whole series</a>` : ''}
+                </div>
+              </div>
               <button class="btn btn--sm join-event-btn" data-join hidden>Join the Event</button>
             </div>
           </div>
         </article>`;
     }).join('');
     $$('#eventList [data-join]').forEach((btn) => btn.addEventListener('click', openJoinModal));
+    $$('#eventList [data-cal]').forEach((btn) => btn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      const menu = btn.nextElementSibling;
+      const wasOpen = !menu.hidden;
+      $$('#eventList .cal-menu').forEach((m) => { m.hidden = true; });
+      menu.hidden = wasOpen;
+    }));
     tickEvents();
     revealInit();
   } catch {
@@ -218,7 +236,7 @@ async function loadLinks() {
 // --- Videos ---
 const CATEGORY_ORDER = [
   'Wednesday Miracle Service',
-  'Saturday Prayer Service',
+  'Hour of Liberation',
   'Three Day Fasting & Prayer',
 ];
 
@@ -477,6 +495,8 @@ function initCarousel() {
 // Calendar subscribe link (webcal:// keeps the calendar auto-updating).
 const calSub = $('#calSubscribe');
 if (calSub) calSub.href = 'webcal://' + location.host + '/api/calendar.ics';
+// Close any open per-event calendar menus when clicking elsewhere.
+document.addEventListener('click', () => $$('.cal-menu').forEach((m) => { m.hidden = true; }));
 
 // --- Init ---
 initCarousel();
