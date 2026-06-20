@@ -352,6 +352,12 @@ a.tile:hover .tile-cta em { transform: translateX(6px); }
   .join-banner-caption { padding: 22px; }
 }
 
+/* Add-to-calendar actions */
+.cal-actions { display: flex; gap: 18px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 26px; }
+.cal-subscribe { font-size: .9rem; font-weight: 600; color: var(--gold-dark); border-bottom: 1px solid transparent; }
+.cal-subscribe:hover { border-bottom-color: var(--gold-dark); }
+.cal-note { margin-top: 12px; font-size: .85rem; color: var(--muted); }
+
 /* Live event schedule: status, countdown, join */
 .event-body { min-width: 0; }
 .event-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 2px; }

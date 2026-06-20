@@ -474,6 +474,10 @@ function initCarousel() {
   start();
 }
 
+// Calendar subscribe link (webcal:// keeps the calendar auto-updating).
+const calSub = $('#calSubscribe');
+if (calSub) calSub.href = 'webcal://' + location.host + '/api/calendar.ics';
+
 // --- Init ---
 initCarousel();
 initBackToTop();
