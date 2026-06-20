@@ -20,7 +20,7 @@ const insertDonation = db.prepare(
 
 const insertPaypal = db.prepare(
   `INSERT INTO donations (amount_cents, currency, donor_name, donor_email, status, method)
-   VALUES (?, 'usd', ?, ?, 'pending', 'paypal')`
+   VALUES (?, 'cad', ?, ?, 'pending', 'paypal')`
 );
 
 router.get('/api/giving/status', (req, res) => {
@@ -46,7 +46,7 @@ router.post('/api/donate', async (req, res) => {
 
   if (!stripe) {
     // Record the intent so nothing is lost, but tell the user it's not live yet.
-    insertDonation.run(amountCents, 'usd', name?.trim() || null, email?.trim() || null, null, 'pending');
+    insertDonation.run(amountCents, 'cad', name?.trim() || null, email?.trim() || null, null, 'pending');
     return res.status(503).json({
       error: 'Online giving is not yet configured. Please add a Stripe key, or contact us to give another way.',
     });
@@ -58,7 +58,7 @@ router.post('/api/donate', async (req, res) => {
       mode: 'payment',
       line_items: [{
         price_data: {
-          currency: 'usd',
+          currency: 'cad',
           product_data: { name: 'Offering — The Prophetic Prayer Army' },
           unit_amount: amountCents,
         },
@@ -68,7 +68,7 @@ router.post('/api/donate', async (req, res) => {
       success_url: `${siteUrl}/?giving=success`,
       cancel_url: `${siteUrl}/?giving=cancelled`,
     });
-    insertDonation.run(amountCents, 'usd', name?.trim() || null, email?.trim() || null, session.id, 'pending');
+    insertDonation.run(amountCents, 'cad', name?.trim() || null, email?.trim() || null, session.id, 'pending');
     res.json({ url: session.url });
   } catch (err) {
     res.status(500).json({ error: `Could not start checkout: ${err.message}` });

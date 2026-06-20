@@ -228,7 +228,7 @@ const PAYPAL_ME = 'https://www.paypal.me/AgyaAcheampong';
 $('#paypalBtn')?.addEventListener('click', () => {
   const amt = parseFloat($('#g-amount')?.value);
   const valid = Number.isFinite(amt) && amt >= 1;
-  const url = valid ? `${PAYPAL_ME}/${Math.round(amt * 100) / 100}` : PAYPAL_ME;
+  const url = valid ? `${PAYPAL_ME}/${Math.round(amt * 100) / 100}CAD` : PAYPAL_ME;
   // Log the gift intent for the admin (fire-and-forget — never blocks the redirect).
   if (valid) {
     const f = $('#giveForm');
