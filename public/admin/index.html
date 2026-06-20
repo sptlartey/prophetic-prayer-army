@@ -98,7 +98,30 @@
     <!-- Events -->
     <section class="tabpane hidden" data-pane="events">
       <div class="card">
-        <h2 id="eventFormTitle">Add Event</h2>
+        <h2>Weekly Services (auto-scheduled)</h2>
+        <p class="muted">These run automatically forever on the times below. Edit a time or detail and click Save, or cancel a single upcoming occurrence (e.g. if it won't hold this week).</p>
+        <div id="servicesWrap" class="stack"></div>
+      </div>
+
+      <div class="card">
+        <h2>Livestream &amp; Social Links</h2>
+        <p class="muted">Used by the "Join the Event" popup and the social icons across the site.</p>
+        <div class="row">
+          <div><label for="lnk-youtube">YouTube</label><input id="lnk-youtube" /></div>
+          <div><label for="lnk-instagram">Instagram</label><input id="lnk-instagram" /></div>
+        </div>
+        <div class="row" style="margin-top:12px">
+          <div><label for="lnk-facebook">Facebook</label><input id="lnk-facebook" /></div>
+          <div><label for="lnk-whatsapp">WhatsApp</label><input id="lnk-whatsapp" /></div>
+        </div>
+        <div class="flex" style="margin-top:14px">
+          <button class="btn" id="saveLinks" type="button">Save Links</button>
+          <span class="muted" id="linksMsg"></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 id="eventFormTitle">Add Special Event</h2>
         <form id="eventForm" class="stack">
           <input type="hidden" id="ev-id" />
           <div class="row">

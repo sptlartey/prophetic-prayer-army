@@ -70,6 +70,30 @@ db.exec(`
     category_override  TEXT,                  -- admin-chosen category (wins if set)
     created_at         TEXT DEFAULT (datetime('now'))
   );
+
+  -- Records that a specific occurrence of a recurring service is cancelled.
+  CREATE TABLE IF NOT EXISTS event_cancellations (
+    id                 INTEGER PRIMARY KEY AUTOINCREMENT,
+    service_key        TEXT NOT NULL,         -- wednesday | liberation | fasting
+    occurrence_start   TEXT NOT NULL,         -- the occurrence's UTC ISO start
+    created_at         TEXT DEFAULT (datetime('now')),
+    UNIQUE(service_key, occurrence_start)
+  );
+
+  -- Admin-editable settings per recurring service (time, duration, etc.).
+  CREATE TABLE IF NOT EXISTS service_settings (
+    service_key        TEXT PRIMARY KEY,      -- wednesday | liberation | fasting
+    time               TEXT,                  -- "HH:MM" Eastern
+    duration_hours     REAL,
+    location           TEXT,
+    description        TEXT
+  );
+
+  -- Generic key/value settings (e.g. social / livestream links).
+  CREATE TABLE IF NOT EXISTS settings (
+    key                TEXT PRIMARY KEY,
+    value              TEXT
+  );
 `);
 
 // Migration: track which method a gift used (card | paypal). Safe to run on

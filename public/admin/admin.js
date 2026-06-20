@@ -51,8 +51,83 @@ $$('.tab').forEach((tab) => tab.addEventListener('click', () => {
 
 // --- Loaders ---
 function loadAll() {
-  loadPrayer(); loadEvents(); loadVideos(); loadMembers(); loadContacts(); loadDonations();
+  loadPrayer(); loadServices(); loadLinksAdmin(); loadEvents(); loadVideos();
+  loadMembers(); loadContacts(); loadDonations();
 }
+
+function etFull(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleString('en-US', {
+    weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit',
+    timeZone: 'America/New_York',
+  }) + ' ET';
+}
+
+async function loadServices() {
+  const wrap = $('#servicesWrap');
+  if (!wrap) return;
+  const { body } = await api('/api/admin/services');
+  wrap.innerHTML = (body || []).map((s) => `
+    <div class="card" style="margin:0;background:#fbfdfa;">
+      <div class="flex" style="justify-content:space-between;align-items:baseline;">
+        <strong>${esc(s.title)}</strong>
+        <span class="muted">Next: ${etFull(s.nextStart)} ${s.cancelled ? '· <span class="pill cancelled" style="background:#f6d6d2;color:#9b2620">cancelled</span>' : ''}</span>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <div><label>Time (ET)</label><input type="time" data-svc="${s.key}" data-f="time" value="${esc(s.time)}" /></div>
+        <div><label>Duration (hours)</label><input type="number" min="0.5" step="0.5" data-svc="${s.key}" data-f="durationHours" value="${esc(String(s.durationHours))}" /></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <div><label>Location</label><input data-svc="${s.key}" data-f="location" value="${esc(s.location || '')}" /></div>
+        <div><label>Description</label><input data-svc="${s.key}" data-f="description" value="${esc(s.description || '')}" /></div>
+      </div>
+      <div class="flex" style="margin-top:12px">
+        <button class="btn small" data-save="${s.key}">Save changes</button>
+        <button class="btn small ${s.cancelled ? 'secondary' : 'danger'}"
+                data-cancel="${s.key}" data-start="${esc(s.nextStart || '')}" data-cancelled="${s.cancelled ? 1 : 0}">
+          ${s.cancelled ? 'Restore this occurrence' : 'Cancel next occurrence'}
+        </button>
+      </div>
+    </div>`).join('') || '<p class="muted">No services.</p>';
+
+  $$('[data-save]', wrap).forEach((btn) => btn.addEventListener('click', async () => {
+    const key = btn.dataset.save;
+    const payload = {};
+    $$(`[data-svc="${key}"]`, wrap).forEach((inp) => { payload[inp.dataset.f] = inp.value; });
+    const { ok, body: r } = await api(`/api/admin/services/${key}`, { method: 'PUT', body: JSON.stringify(payload) });
+    if (ok) loadServices(); else alert(r.error || 'Could not save.');
+  }));
+
+  $$('[data-cancel]', wrap).forEach((btn) => btn.addEventListener('click', async () => {
+    const cancelled = btn.dataset.cancelled !== '1'; // toggle
+    await api('/api/admin/recurring/cancel', {
+      method: 'POST',
+      body: JSON.stringify({ key: btn.dataset.cancel, start: btn.dataset.start, cancelled }),
+    });
+    loadServices();
+  }));
+}
+
+async function loadLinksAdmin() {
+  if (!$('#lnk-youtube')) return;
+  const { body } = await api('/api/admin/settings');
+  $('#lnk-youtube').value = body.youtube || '';
+  $('#lnk-instagram').value = body.instagram || '';
+  $('#lnk-facebook').value = body.facebook || '';
+  $('#lnk-whatsapp').value = body.whatsapp || '';
+}
+
+$('#saveLinks')?.addEventListener('click', async () => {
+  const payload = {
+    youtube: $('#lnk-youtube').value,
+    instagram: $('#lnk-instagram').value,
+    facebook: $('#lnk-facebook').value,
+    whatsapp: $('#lnk-whatsapp').value,
+  };
+  const { ok } = await api('/api/admin/settings', { method: 'PUT', body: JSON.stringify(payload) });
+  $('#linksMsg').textContent = ok ? 'Saved ✓' : 'Could not save.';
+  setTimeout(() => { const m = $('#linksMsg'); if (m) m.textContent = ''; }, 2500);
+});
 
 async function loadPrayer() {
   const { body } = await api('/api/admin/prayer');

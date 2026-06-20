@@ -48,7 +48,38 @@ $$('#navLinks a').forEach((a) => a.addEventListener('click', () => $('#navLinks'
 const yearEl = $('#year');
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-// --- Events ---
+// --- Events (live schedule: timezones, countdown, status, join popup) ---
+let siteLinks = { youtube: '', instagram: '', facebook: '', whatsapp: '' };
+
+const EVENT_TZS = [
+  { label: 'EST', zone: 'America/New_York' },
+  { label: 'PST', zone: 'America/Los_Angeles' },
+  { label: 'GMT', zone: 'UTC' },
+];
+function tzTimes(iso) {
+  return EVENT_TZS
+    .map((t) => new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: t.zone }) + ' ' + t.label)
+    .join(' · ');
+}
+function etDateLabel(iso) {
+  return new Date(iso).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'America/New_York' });
+}
+function etBadge(iso) {
+  const d = new Date(iso);
+  return {
+    day: d.toLocaleDateString('en-US', { day: 'numeric', timeZone: 'America/New_York' }),
+    mon: d.toLocaleDateString('en-US', { month: 'short', timeZone: 'America/New_York' }).toUpperCase(),
+  };
+}
+function fmtCountdown(ms) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  const d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+  const p = [];
+  if (d) p.push(d + 'd');
+  p.push(String(h).padStart(2, '0') + 'h', String(m).padStart(2, '0') + 'm', String(sec).padStart(2, '0') + 's');
+  return p.join(' ');
+}
+
 async function loadEvents() {
   const list = $('#eventList');
   if (!list) return;
@@ -60,20 +91,107 @@ async function loadEvents() {
       return;
     }
     list.innerHTML = events.map((e) => {
-      const d = fmtDate(e.starts_at);
+      const b = etBadge(e.start);
       return `
-        <article class="event">
-          <div class="date"><div class="d">${d.day}</div><div class="m">${d.mon}</div></div>
-          <div>
-            <h3>${escapeHtml(e.title)}</h3>
-            <div class="meta">${d.full}${e.location ? ' &middot; ' + escapeHtml(e.location) : ''}</div>
-            ${e.description ? `<p style="margin:.4rem 0 0;color:var(--muted)">${escapeHtml(e.description)}</p>` : ''}
+        <article class="event ${e.cancelled ? 'cancelled-card' : ''}"
+                 data-start="${new Date(e.start).getTime()}"
+                 data-end="${new Date(e.end).getTime()}"
+                 data-remove="${new Date(e.removeAt).getTime()}"
+                 data-cancelled="${e.cancelled ? 1 : 0}">
+          <div class="date"><div class="d">${b.day}</div><div class="m">${b.mon}</div></div>
+          <div class="event-body">
+            <div class="event-head">
+              <h3>${escapeHtml(e.title)}</h3>
+              <span class="event-status" data-status></span>
+            </div>
+            <div class="meta">${etDateLabel(e.start)}</div>
+            <div class="event-tz">${tzTimes(e.start)}${e.location ? ' &middot; ' + escapeHtml(e.location) : ''}</div>
+            ${e.description ? `<p class="event-desc">${escapeHtml(e.description)}</p>` : ''}
+            <div class="event-foot">
+              <span class="event-countdown" data-countdown></span>
+              <button class="btn btn--sm join-event-btn" data-join hidden>Join the Event</button>
+            </div>
           </div>
         </article>`;
     }).join('');
+    $$('#eventList [data-join]').forEach((btn) => btn.addEventListener('click', openJoinModal));
+    tickEvents();
     revealInit();
   } catch {
     list.innerHTML = '<p class="center empty-note">Could not load events.</p>';
+  }
+}
+
+// Update each event's status/countdown every second; "Join" shows only while live.
+function tickEvents() {
+  const list = $('#eventList');
+  if (!list) return;
+  const now = Date.now();
+  let expired = false;
+  $$('.event', list).forEach((el) => {
+    if (!el.dataset.start) return;
+    const start = +el.dataset.start, end = +el.dataset.end, remove = +el.dataset.remove;
+    const cancelled = el.dataset.cancelled === '1';
+    const statusEl = $('[data-status]', el), cdEl = $('[data-countdown]', el), joinBtn = $('[data-join]', el);
+    if (now >= remove) expired = true;
+    let cls, text, cd = '', live = false;
+    if (cancelled) { cls = 'cancelled'; text = 'Cancelled'; }
+    else if (now < start) { cls = 'upcoming'; text = 'Upcoming'; cd = 'Starts in ' + fmtCountdown(start - now); }
+    else if (now < end) { cls = 'ongoing'; text = 'Ongoing now'; cd = 'Live now · ends in ' + fmtCountdown(end - now); live = true; }
+    else { cls = 'ended'; text = 'Ended'; }
+    if (statusEl) { statusEl.className = 'event-status ' + cls; statusEl.textContent = text; }
+    if (cdEl) cdEl.textContent = cd;
+    if (joinBtn) joinBtn.hidden = !live;
+  });
+  if (expired) loadEvents(); // an occurrence rolled past its day → pull the next one
+}
+
+// Join-the-Event popup (built once, reused) — links come from admin settings.
+function openJoinModal() {
+  let modal = $('#joinModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'joinModal';
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+      <div class="modal" role="dialog" aria-modal="true" aria-label="Join the live service">
+        <button class="modal-close" type="button" aria-label="Close">&times;</button>
+        <h3>We're live — join us!</h3>
+        <p class="modal-note">Tap a platform to join the service in progress:</p>
+        <div class="join-links"></div>
+      </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
+    $('.modal-close', modal).addEventListener('click', () => modal.classList.remove('open'));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') modal.classList.remove('open'); });
+  }
+  const platforms = [
+    { k: 'youtube', label: 'YouTube', cls: 'social-youtube' },
+    { k: 'instagram', label: 'Instagram', cls: 'social-instagram' },
+    { k: 'facebook', label: 'Facebook', cls: 'social-facebook' },
+  ];
+  $('.join-links', modal).innerHTML = platforms
+    .filter((p) => siteLinks[p.k])
+    .map((p) => `<a class="join-link ${p.cls}" href="${siteLinks[p.k]}" target="_blank" rel="noopener noreferrer">${p.label}</a>`)
+    .join('');
+  modal.classList.add('open');
+}
+
+// Fetch the editable links and apply them to the social icons + join popup.
+async function loadLinks() {
+  try {
+    const res = await fetch('/api/settings');
+    const data = await res.json();
+    if (data.links) siteLinks = data.links;
+  } catch { /* keep defaults */ }
+  const map = {
+    'social-youtube': siteLinks.youtube,
+    'social-facebook': siteLinks.facebook,
+    'social-instagram': siteLinks.instagram,
+    'social-whatsapp': siteLinks.whatsapp,
+  };
+  for (const [cls, url] of Object.entries(map)) {
+    if (url) $$('a.' + cls).forEach((a) => { a.href = url; });
   }
 }
 
@@ -340,5 +458,7 @@ function initCarousel() {
 initCarousel();
 initBackToTop();
 revealInit();
-loadEvents();
+loadLinks().then(loadEvents);
+setInterval(tickEvents, 1000);          // live countdown / status
+setInterval(loadEvents, 60000);         // roll occurrences + reflect admin changes
 loadVideos();

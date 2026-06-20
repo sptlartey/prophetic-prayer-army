@@ -10,6 +10,7 @@ import eventRoutes from './routes/events.js';
 import memberRoutes from './routes/members.js';
 import donationRoutes from './routes/donations.js';
 import podcastRoutes from './routes/podcasts.js';
+import settingsRoutes from './routes/settings.js';
 import adminRoutes from './routes/admin.js';
 import { refreshVideos } from './services/youtube.js';
 
@@ -27,6 +28,7 @@ app.use(eventRoutes);
 app.use(memberRoutes);
 app.use(donationRoutes);
 app.use(podcastRoutes);
+app.use(settingsRoutes);
 app.use(adminRoutes);
 
 // Health check — responds instantly so Railway knows the app is ready.

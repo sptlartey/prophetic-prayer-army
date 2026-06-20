@@ -3,6 +3,8 @@
 import { Router } from 'express';
 import db from '../db.js';
 import { CATEGORIES, refreshVideos } from '../services/youtube.js';
+import { serviceConfigs } from './events.js';
+import { LINK_KEYS, getLinks } from './settings.js';
 
 const router = Router();
 
@@ -118,6 +120,75 @@ router.patch('/api/admin/videos/:videoId/category', requireAdmin, (req, res) => 
 
 router.get('/api/admin/categories', requireAdmin, (req, res) => {
   res.json(Object.values(CATEGORIES));
+});
+
+// --- Recurring services: edit time/details + cancel an occurrence ---
+router.get('/api/admin/services', requireAdmin, (req, res) => {
+  res.json(serviceConfigs());
+});
+
+router.put('/api/admin/services/:key', requireAdmin, (req, res) => {
+  const { time, durationHours, location, description } = req.body || {};
+  if (time && !/^\d{2}:\d{2}$/.test(time)) {
+    return res.status(400).json({ error: 'Time must be in HH:MM (24-hour) format.' });
+  }
+  const exists = db.prepare('SELECT 1 FROM service_settings WHERE service_key = ?').get(req.params.key);
+  if (!exists) return res.status(404).json({ error: 'Unknown service.' });
+  db.prepare(
+    `UPDATE service_settings
+       SET time = COALESCE(?, time),
+           duration_hours = COALESCE(?, duration_hours),
+           location = COALESCE(?, location),
+           description = COALESCE(?, description)
+     WHERE service_key = ?`
+  ).run(
+    time || null,
+    durationHours != null && durationHours !== '' ? Number(durationHours) : null,
+    location ?? null,
+    description ?? null,
+    req.params.key
+  );
+  res.json({ ok: true });
+});
+
+router.post('/api/admin/recurring/cancel', requireAdmin, (req, res) => {
+  const { key, start, cancelled } = req.body || {};
+  if (!key || !start) return res.status(400).json({ error: 'key and start are required.' });
+  if (cancelled) {
+    db.prepare(
+      'INSERT OR IGNORE INTO event_cancellations (service_key, occurrence_start) VALUES (?, ?)'
+    ).run(key, start);
+  } else {
+    db.prepare(
+      'DELETE FROM event_cancellations WHERE service_key = ? AND occurrence_start = ?'
+    ).run(key, start);
+  }
+  res.json({ ok: true });
+});
+
+// --- Social / livestream links ---
+router.get('/api/admin/settings', requireAdmin, (req, res) => {
+  res.json(getLinks());
+});
+
+router.put('/api/admin/settings', requireAdmin, (req, res) => {
+  const body = req.body || {};
+  // Accept the friendly keys (youtube, instagram, …) → store as *_url.
+  const map = {
+    youtube: 'youtube_url',
+    instagram: 'instagram_url',
+    facebook: 'facebook_url',
+    whatsapp: 'whatsapp_url',
+  };
+  const upsert = db.prepare(
+    'INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value'
+  );
+  for (const [friendly, col] of Object.entries(map)) {
+    if (typeof body[friendly] === 'string' && LINK_KEYS.includes(col)) {
+      upsert.run(col, body[friendly].trim());
+    }
+  }
+  res.json({ ok: true, links: getLinks() });
 });
 
 export default router;
