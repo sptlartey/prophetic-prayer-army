@@ -108,6 +108,9 @@ const svcCols = db.prepare('PRAGMA table_info(service_settings)').all().map((c) 
 if (!svcCols.includes('title')) {
   db.exec('ALTER TABLE service_settings ADD COLUMN title TEXT');
 }
+if (!svcCols.includes('live_link')) {
+  db.exec('ALTER TABLE service_settings ADD COLUMN live_link TEXT');
+}
 
 // Seed one example special event the first time the DB is created so the
 // landing page isn't empty. The weekly Wednesday/Saturday services are NOT

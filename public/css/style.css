@@ -436,6 +436,11 @@ a.tile:hover .tile-cta em { transform: translateX(6px); }
 .join-link.social-youtube { background: #ff0000; }
 .join-link.social-instagram { background: #e1306c; }
 .join-link.social-facebook { background: #1877f2; }
+.join-link.join-live-primary {
+  background: var(--gold); font-size: 1.05rem; letter-spacing: .06em; text-align: center;
+}
+.join-link.join-live-primary:hover { background: var(--gold-dark); filter: none; }
+.join-or { color: var(--muted); font-size: .85rem; text-align: center; margin: 4px 0 0; }
 
 /* Giving carousel / slideshow */
 .carousel {

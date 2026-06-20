@@ -128,7 +128,7 @@ router.get('/api/admin/services', requireAdmin, (req, res) => {
 });
 
 router.put('/api/admin/services/:key', requireAdmin, (req, res) => {
-  const { title, time, durationHours, location, description } = req.body || {};
+  const { title, time, durationHours, location, description, liveLink } = req.body || {};
   if (time && !/^\d{2}:\d{2}$/.test(time)) {
     return res.status(400).json({ error: 'Time must be in HH:MM (24-hour) format.' });
   }
@@ -140,7 +140,8 @@ router.put('/api/admin/services/:key', requireAdmin, (req, res) => {
            time = COALESCE(?, time),
            duration_hours = COALESCE(?, duration_hours),
            location = COALESCE(?, location),
-           description = COALESCE(?, description)
+           description = COALESCE(?, description),
+           live_link = ?
      WHERE service_key = ?`
   ).run(
     title && title.trim() ? title.trim() : null,
@@ -148,6 +149,7 @@ router.put('/api/admin/services/:key', requireAdmin, (req, res) => {
     durationHours != null && durationHours !== '' ? Number(durationHours) : null,
     location ?? null,
     description ?? null,
+    typeof liveLink === 'string' ? liveLink.trim() || null : null,
     req.params.key
   );
   res.json({ ok: true });

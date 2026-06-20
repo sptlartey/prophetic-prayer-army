@@ -101,6 +101,7 @@ function merged(svc) {
     durationHours: s.duration_hours ?? svc.durationHours,
     location: s.location ?? svc.location,
     description: s.description ?? svc.description,
+    liveLink: s.live_link || null,
   };
 }
 
@@ -151,6 +152,7 @@ export function recurringEvents() {
       title: svc.title,
       location: svc.location,
       description: svc.description,
+      liveLink: svc.liveLink,
       start,
       end: occ.end.toUTC().toISO(),
       removeAt: occ.removeAt.toUTC().toISO(),
@@ -173,6 +175,7 @@ export function serviceConfigs() {
       durationHours: svc.durationHours,
       location: svc.location,
       description: svc.description,
+      liveLink: svc.liveLink,
       nextStart: evt?.start,
       cancelled: evt?.cancelled || false,
     };

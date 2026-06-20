@@ -101,7 +101,8 @@ async function loadEvents() {
                  data-start="${new Date(e.start).getTime()}"
                  data-end="${new Date(e.end).getTime()}"
                  data-remove="${new Date(e.removeAt).getTime()}"
-                 data-cancelled="${e.cancelled ? 1 : 0}">
+                 data-cancelled="${e.cancelled ? 1 : 0}"
+                 data-live-link="${escapeHtml(e.liveLink || '')}">
           <div class="date"><div class="d">${b.day}</div><div class="m">${b.mon}</div></div>
           <div class="event-body">
             <div class="event-head">
@@ -125,7 +126,10 @@ async function loadEvents() {
           </div>
         </article>`;
     }).join('');
-    $$('#eventList [data-join]').forEach((btn) => btn.addEventListener('click', openJoinModal));
+    $$('#eventList [data-join]').forEach((btn) => btn.addEventListener('click', () => {
+      const liveLink = btn.closest('.event')?.dataset.liveLink || '';
+      openJoinModal(liveLink);
+    }));
     $$('#eventList [data-cal]').forEach((btn) => btn.addEventListener('click', (ev) => {
       ev.stopPropagation();
       const menu = btn.nextElementSibling;
@@ -184,8 +188,10 @@ function tickEvents() {
   if (expired) loadEvents(); // an occurrence rolled past its day → pull the next one
 }
 
-// Join-the-Event popup (built once, reused) — links come from admin settings.
-function openJoinModal() {
+// Join-the-Event popup (built once, reused).
+// liveLink: direct URL to this week's stream (set by admin per-service); falls
+// back to the general social links if not set.
+function openJoinModal(liveLink) {
   let modal = $('#joinModal');
   if (!modal) {
     modal = document.createElement('div');
@@ -208,10 +214,17 @@ function openJoinModal() {
     { k: 'instagram', label: 'Instagram', cls: 'social-instagram' },
     { k: 'facebook', label: 'Facebook', cls: 'social-facebook' },
   ];
-  $('.join-links', modal).innerHTML = platforms
+  const socialHtml = platforms
     .filter((p) => siteLinks[p.k])
     .map((p) => `<a class="join-link ${p.cls}" href="${siteLinks[p.k]}" target="_blank" rel="noopener noreferrer">${p.label}</a>`)
     .join('');
+  if (liveLink) {
+    $('.join-links', modal).innerHTML =
+      `<a class="join-link join-live-primary" href="${liveLink}" target="_blank" rel="noopener noreferrer">Join Live &rarr;</a>` +
+      (socialHtml ? `<p class="join-or">or connect via:</p>${socialHtml}` : '');
+  } else {
+    $('.join-links', modal).innerHTML = socialHtml;
+  }
   modal.classList.add('open');
 }
 

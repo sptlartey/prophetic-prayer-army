@@ -82,6 +82,10 @@ async function loadServices() {
         <div><label>Location</label><input data-svc="${s.key}" data-f="location" value="${esc(s.location || '')}" /></div>
         <div><label>Description</label><input data-svc="${s.key}" data-f="description" value="${esc(s.description || '')}" /></div>
       </div>
+      <div style="margin-top:10px">
+        <label>Live Link <span class="muted">(optional — direct URL to this week's livestream, e.g. youtube.com/live/…)</span></label>
+        <input data-svc="${s.key}" data-f="liveLink" value="${esc(s.liveLink || '')}" placeholder="https://youtube.com/live/abc123" style="width:100%" />
+      </div>
       <div class="flex" style="margin-top:12px">
         <button class="btn small" data-save="${s.key}">Save changes</button>
         <button class="btn small ${s.cancelled ? 'secondary' : 'danger'}"
