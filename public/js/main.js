@@ -134,14 +134,34 @@ function tickEvents() {
     const cancelled = el.dataset.cancelled === '1';
     const statusEl = $('[data-status]', el), cdEl = $('[data-countdown]', el), joinBtn = $('[data-join]', el);
     if (now >= remove) expired = true;
-    let cls, text, cd = '', live = false;
+    let cls, text, cd = '';
     if (cancelled) { cls = 'cancelled'; text = 'Cancelled'; }
     else if (now < start) { cls = 'upcoming'; text = 'Upcoming'; cd = 'Starts in ' + fmtCountdown(start - now); }
-    else if (now < end) { cls = 'ongoing'; text = 'Ongoing now'; cd = 'Live now · ends in ' + fmtCountdown(end - now); live = true; }
+    else if (now < end) { cls = 'ongoing'; text = 'Ongoing now'; cd = 'Live now · ends in ' + fmtCountdown(end - now); }
     else { cls = 'ended'; text = 'Ended'; }
     if (statusEl) { statusEl.className = 'event-status ' + cls; statusEl.textContent = text; }
     if (cdEl) cdEl.textContent = cd;
-    if (joinBtn) joinBtn.hidden = !live;
+
+    // "Join the Event" is clickable only from 30 min before start until the
+    // event's day ends; before that it's shown greyed-out and disabled.
+    const JOIN_LEAD = 30 * 60 * 1000;
+    if (joinBtn) {
+      if (cancelled) {
+        joinBtn.hidden = true;
+      } else if (now >= start - JOIN_LEAD && now < remove) {
+        joinBtn.hidden = false;
+        joinBtn.disabled = false;
+        joinBtn.classList.remove('is-disabled');
+        joinBtn.title = '';
+      } else if (now < start - JOIN_LEAD) {
+        joinBtn.hidden = false;
+        joinBtn.disabled = true;
+        joinBtn.classList.add('is-disabled');
+        joinBtn.title = 'Opens 30 minutes before the service starts';
+      } else {
+        joinBtn.hidden = true;
+      }
+    }
   });
   if (expired) loadEvents(); // an occurrence rolled past its day → pull the next one
 }

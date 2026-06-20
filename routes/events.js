@@ -21,7 +21,7 @@ export const RECURRING = [
     weekday: 3, // Wednesday
     time: '19:00',
     durationHours: 2,
-    location: 'Online & Onsite',
+    location: 'Online',
     description: 'A mid-week encounter for prophetic ministry, healing, and the miraculous power of God.',
   },
   {
@@ -31,17 +31,17 @@ export const RECURRING = [
     weekday: 6, // Saturday
     time: '16:00',
     durationHours: 2,
-    location: 'Online & Onsite',
+    location: 'Online',
     description: 'A Saturday hour of liberation, deliverance, and prevailing prayer for breakthrough.',
   },
   {
     key: 'fasting',
-    title: 'Three Day Fasting & Prayer',
+    title: 'Three Days Only Water Fast & Prayer',
     type: 'firstFriday',
     time: '00:00',
     durationHours: 72,
-    location: 'Online & Onsite',
-    description: 'First-Friday consecration — three days of prayer and fasting, Friday through Sunday.',
+    location: 'Online',
+    description: 'A consecrated three-day fast seeking the face of God for breakthrough.',
   },
 ];
 
@@ -54,13 +54,32 @@ for (const s of RECURRING) {
   seedSetting.run(s.key, s.time, s.durationHours, s.location, s.description);
 }
 
+// One-time: adopt the "Three Days Only Water Fast & Prayer" naming/details for
+// installs seeded before this change (title falls back to the new code default).
+const renamed = db.prepare("SELECT 1 FROM settings WHERE key = 'fast_rename_v1'").get();
+if (!renamed) {
+  db.prepare(
+    "UPDATE service_settings SET description = ?, title = NULL WHERE service_key = 'fasting'"
+  ).run('A consecrated three-day fast seeking the face of God for breakthrough.');
+  db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('fast_rename_v1', '1')").run();
+}
+
+// One-time: all services are online — drop any "& Onsite" / platform notes.
+const allOnline = db.prepare("SELECT 1 FROM settings WHERE key = 'all_online_v1'").get();
+if (!allOnline) {
+  db.prepare("UPDATE service_settings SET location = 'Online'").run();
+  db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('all_online_v1', '1')").run();
+}
+
 // Remove stale stored copies of these titles (incl. legacy "Saturday Prayer
-// Service") so nothing duplicates the generated cards. Idempotent at boot.
+// Service" and the duplicate one-off water-fast event) so nothing duplicates
+// the generated cards. Idempotent at boot.
 const cleanupTitles = [
   'Wednesday Miracle Service',
   'Hour of Liberation',
   'Saturday Prayer Service',
   'Three Day Fasting & Prayer',
+  'Three Days Only Water Fast & Prayer',
 ];
 db.prepare(
   `DELETE FROM events WHERE title IN (${cleanupTitles.map(() => '?').join(',')})`
@@ -77,6 +96,7 @@ function merged(svc) {
   const s = settingsStmt.get(svc.key) || {};
   return {
     ...svc,
+    title: s.title || svc.title,
     time: s.time ?? svc.time,
     durationHours: s.duration_hours ?? svc.durationHours,
     location: s.location ?? svc.location,

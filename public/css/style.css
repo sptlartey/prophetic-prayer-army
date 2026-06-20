@@ -382,6 +382,12 @@ a.tile:hover .tile-cta em { transform: translateX(6px); }
 .event.cancelled-card h3 { text-decoration: line-through; }
 .btn--sm { padding: 8px 18px; font-size: .72rem; }
 .join-event-btn { background: var(--gold); border-color: var(--gold); }
+.join-event-btn.is-disabled,
+.join-event-btn:disabled {
+  background: #c4cfbd; border-color: #c4cfbd; color: #fff;
+  cursor: not-allowed; opacity: .75; box-shadow: none; transform: none;
+  pointer-events: none;
+}
 
 /* Join-the-Event modal */
 .modal-overlay {

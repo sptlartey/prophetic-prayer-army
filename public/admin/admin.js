@@ -73,6 +73,7 @@ async function loadServices() {
         <strong>${esc(s.title)}</strong>
         <span class="muted">Next: ${etFull(s.nextStart)} ${s.cancelled ? '· <span class="pill cancelled" style="background:#f6d6d2;color:#9b2620">cancelled</span>' : ''}</span>
       </div>
+      <div style="margin-top:10px"><label>Title</label><input data-svc="${s.key}" data-f="title" value="${esc(s.title)}" /></div>
       <div class="row" style="margin-top:10px">
         <div><label>Time (ET)</label><input type="time" data-svc="${s.key}" data-f="time" value="${esc(s.time)}" /></div>
         <div><label>Duration (hours)</label><input type="number" min="0.5" step="0.5" data-svc="${s.key}" data-f="durationHours" value="${esc(String(s.durationHours))}" /></div>

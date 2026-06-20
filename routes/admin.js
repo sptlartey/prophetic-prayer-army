@@ -128,7 +128,7 @@ router.get('/api/admin/services', requireAdmin, (req, res) => {
 });
 
 router.put('/api/admin/services/:key', requireAdmin, (req, res) => {
-  const { time, durationHours, location, description } = req.body || {};
+  const { title, time, durationHours, location, description } = req.body || {};
   if (time && !/^\d{2}:\d{2}$/.test(time)) {
     return res.status(400).json({ error: 'Time must be in HH:MM (24-hour) format.' });
   }
@@ -136,12 +136,14 @@ router.put('/api/admin/services/:key', requireAdmin, (req, res) => {
   if (!exists) return res.status(404).json({ error: 'Unknown service.' });
   db.prepare(
     `UPDATE service_settings
-       SET time = COALESCE(?, time),
+       SET title = COALESCE(?, title),
+           time = COALESCE(?, time),
            duration_hours = COALESCE(?, duration_hours),
            location = COALESCE(?, location),
            description = COALESCE(?, description)
      WHERE service_key = ?`
   ).run(
+    title && title.trim() ? title.trim() : null,
     time || null,
     durationHours != null && durationHours !== '' ? Number(durationHours) : null,
     location ?? null,

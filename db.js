@@ -103,6 +103,12 @@ if (!donationCols.includes('method')) {
   db.exec("ALTER TABLE donations ADD COLUMN method TEXT DEFAULT 'card'");
 }
 
+// Migration: allow an admin-editable title per recurring service.
+const svcCols = db.prepare('PRAGMA table_info(service_settings)').all().map((c) => c.name);
+if (!svcCols.includes('title')) {
+  db.exec('ALTER TABLE service_settings ADD COLUMN title TEXT');
+}
+
 // Seed one example special event the first time the DB is created so the
 // landing page isn't empty. The weekly Wednesday/Saturday services are NOT
 // seeded here — they are generated automatically from the calendar in
