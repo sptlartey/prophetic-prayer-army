@@ -412,9 +412,21 @@ $('#paypalBtn')?.addEventListener('click', () => {
   window.open(url, '_blank', 'noopener');
 });
 
-// --- Zelle giving: show phone number info overlay ---
+// --- Zelle giving: toggle info card with copy-to-clipboard ---
 $('#zelleBtn')?.addEventListener('click', () => {
-  setMsg('giveMsg', 'Send to Zelle: +1 (567) 290-9873 &mdash; Rose Mate-Kodjo. Thank you for your gift!');
+  const card = $('#zelleCard');
+  if (!card) return;
+  card.classList.toggle('hidden');
+});
+$('#zelleCopyBtn')?.addEventListener('click', () => {
+  navigator.clipboard.writeText('+15672909873').then(() => {
+    const btn = $('#zelleCopyBtn');
+    if (!btn) return;
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    btn.style.color = '#00a826';
+    setTimeout(() => { btn.innerHTML = orig; btn.style.color = ''; }, 2000);
+  });
 });
 
 // --- Cash App giving: open $RoseMaKo ---
