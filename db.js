@@ -111,6 +111,9 @@ if (!svcCols.includes('title')) {
 if (!svcCols.includes('live_link')) {
   db.exec('ALTER TABLE service_settings ADD COLUMN live_link TEXT');
 }
+if (!svcCols.includes('weekday')) {
+  db.exec('ALTER TABLE service_settings ADD COLUMN weekday INTEGER');
+}
 
 // Seed one example special event the first time the DB is created so the
 // landing page isn't empty. The weekly Wednesday/Saturday services are NOT

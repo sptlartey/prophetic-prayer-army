@@ -128,9 +128,13 @@ router.get('/api/admin/services', requireAdmin, (req, res) => {
 });
 
 router.put('/api/admin/services/:key', requireAdmin, (req, res) => {
-  const { title, time, durationHours, location, description, liveLink } = req.body || {};
+  const { title, time, durationHours, location, description, liveLink, weekday } = req.body || {};
   if (time && !/^\d{2}:\d{2}$/.test(time)) {
     return res.status(400).json({ error: 'Time must be in HH:MM (24-hour) format.' });
+  }
+  const wdNum = weekday != null && weekday !== '' ? Number(weekday) : null;
+  if (wdNum !== null && (wdNum < 1 || wdNum > 7 || !Number.isInteger(wdNum))) {
+    return res.status(400).json({ error: 'Weekday must be 1 (Mon) – 7 (Sun).' });
   }
   const exists = db.prepare('SELECT 1 FROM service_settings WHERE service_key = ?').get(req.params.key);
   if (!exists) return res.status(404).json({ error: 'Unknown service.' });
@@ -138,6 +142,7 @@ router.put('/api/admin/services/:key', requireAdmin, (req, res) => {
     `UPDATE service_settings
        SET title = COALESCE(?, title),
            time = COALESCE(?, time),
+           weekday = COALESCE(?, weekday),
            duration_hours = COALESCE(?, duration_hours),
            location = COALESCE(?, location),
            description = COALESCE(?, description),
@@ -146,6 +151,7 @@ router.put('/api/admin/services/:key', requireAdmin, (req, res) => {
   ).run(
     title && title.trim() ? title.trim() : null,
     time || null,
+    wdNum,
     durationHours != null && durationHours !== '' ? Number(durationHours) : null,
     location ?? null,
     description ?? null,

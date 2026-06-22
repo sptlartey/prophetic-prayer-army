@@ -75,6 +75,7 @@ async function loadServices() {
       </div>
       <div style="margin-top:10px"><label>Title</label><input data-svc="${s.key}" data-f="title" value="${esc(s.title)}" /></div>
       <div class="row" style="margin-top:10px">
+        ${s.type === 'weekly' ? `<div><label>Day of Week</label><select data-svc="${s.key}" data-f="weekday">${[['1','Monday'],['2','Tuesday'],['3','Wednesday'],['4','Thursday'],['5','Friday'],['6','Saturday'],['7','Sunday']].map(([v,l])=>`<option value="${v}"${String(s.weekday)===v?' selected':''}>${l}</option>`).join('')}</select></div>` : ''}
         <div><label>Time (ET)</label><input type="time" data-svc="${s.key}" data-f="time" value="${esc(s.time)}" /></div>
         <div><label>Duration (hours)</label><input type="number" min="0.5" step="0.5" data-svc="${s.key}" data-f="durationHours" value="${esc(String(s.durationHours))}" /></div>
       </div>
