@@ -241,11 +241,32 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788.06-.26.76-4.852.816-5.09a.932.932 0 0 1 .923-.788h.58c3.76 0 6.705-1.528 7.565-5.946.36-1.847.174-3.388-.777-4.471z"/></svg>
             Give with PayPal
           </button>
+          <!-- Zelle info card (shown on click) -->
+          <div class="zelle-card hidden" id="zelleCard">
+            <div class="zelle-card-inner">
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.5 16.5h-7l4.5-6H8.5v-3h7l-4.5 6H17.5v3z"/></svg>
+              <div class="zelle-card-text">
+                <span class="zelle-card-label">Send via Zelle to</span>
+                <span class="zelle-card-name">Rose Mate-Kodjo</span>
+                <span class="zelle-card-number" id="zelleNumber">+1 (567) 290-9873</span>
+              </div>
+              <button class="zelle-copy-btn" id="zelleCopyBtn" type="button" aria-label="Copy phone number">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy
+              </button>
+            </div>
+          </div>
           <div class="give-or"><span>or</span></div>
-          <button class="btn btn-cashapp" type="button" id="cashappBtn">
-            <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M23.59 3.48A5 5 0 0 0 20.52.41C19.24.01 17.78 0 15 0H9C6.22 0 4.76.01 3.48.41A5 5 0 0 0 .41 3.48C.01 4.76 0 6.22 0 9v6c0 2.78.01 4.24.41 5.52a5 5 0 0 0 3.07 3.07C4.76 23.99 6.22 24 9 24h6c2.78 0 4.24-.01 5.52-.41a5 5 0 0 0 3.07-3.07C23.99 19.24 24 17.78 24 15V9c0-2.78-.01-4.24-.41-5.52zM15.13 7.5l-.6-1.8a.5.5 0 0 0-.48-.35H9.95a.5.5 0 0 0-.49.39L9.1 7.5H7.5l1.73-5.18A1.5 1.5 0 0 1 10.67 1.5h2.66a1.5 1.5 0 0 1 1.44 1.07L16.5 7.5h-1.37zm.87 9a4.5 4.5 0 0 1-4 2.5 4.5 4.5 0 0 1-4-2.5H6.5l.5-1.5H7a4.5 4.5 0 0 1 0-1H6.5l.5-1.5H8a4.5 4.5 0 0 1 8 0h1.5l.5 1.5H17a4.5 4.5 0 0 1 0 1h.5l.5 1.5H16zm-4-5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>
-            Give with Cash App
-          </button>
+          <div class="give-alt-row">
+            <button class="btn btn-zelle" type="button" id="zelleBtn">
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.5 16.5h-7l4.5-6H8.5v-3h7l-4.5 6H17.5v3z"/></svg>
+              Zelle
+            </button>
+            <button class="btn btn-cashapp" type="button" id="cashappBtn">
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M23.59 3.48A5 5 0 0 0 20.52.41C19.24.01 17.78 0 15 0H9C6.22 0 4.76.01 3.48.41A5 5 0 0 0 .41 3.48C.01 4.76 0 6.22 0 9v6c0 2.78.01 4.24.41 5.52a5 5 0 0 0 3.07 3.07C4.76 23.99 6.22 24 9 24h6c2.78 0 4.24-.01 5.52-.41a5 5 0 0 0 3.07-3.07C23.99 19.24 24 17.78 24 15V9c0-2.78-.01-4.24-.41-5.52zM15.13 7.5l-.6-1.8a.5.5 0 0 0-.48-.35H9.95a.5.5 0 0 0-.49.39L9.1 7.5H7.5l1.73-5.18A1.5 1.5 0 0 1 10.67 1.5h2.66a1.5 1.5 0 0 1 1.44 1.07L16.5 7.5h-1.37zm.87 9a4.5 4.5 0 0 1-4 2.5 4.5 4.5 0 0 1-4-2.5H6.5l.5-1.5H7a4.5 4.5 0 0 1 0-1H6.5l.5-1.5H8a4.5 4.5 0 0 1 8 0h1.5l.5 1.5H17a4.5 4.5 0 0 1 0 1h.5l.5 1.5H16zm-4-5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>
+              Cash App
+            </button>
+          </div>
           <!-- Card (Stripe) giving hidden for now; PayPal is the active option.
                To re-enable later, remove the "hidden" class below and set a Stripe key. -->
           <div class="give-or hidden"><span>or pay by card</span></div>
