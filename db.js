@@ -121,7 +121,7 @@ if (eventCount === 0) {
   db.prepare(
     'INSERT INTO events (title, starts_at, location, description) VALUES (?, ?, ?, ?)'
   ).run(
-    'Three Day Fasting & Prayer',
+    'Three Days Only Water Fasting & Prayer',
     '2026-07-01T18:00',
     'Online + Onsite',
     'A consecrated three-day fast seeking the face of God for breakthrough.'

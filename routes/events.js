@@ -78,7 +78,7 @@ const cleanupTitles = [
   'Wednesday Miracle Service',
   'Hour of Liberation',
   'Saturday Prayer Service',
-  'Three Day Fasting & Prayer',
+  'Three Days Only Water Fasting & Prayer',
   'Three Days Only Water Fast & Prayer',
 ];
 db.prepare(
