@@ -5,7 +5,7 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const CATEGORIES = [
   'Wednesday Miracle Service',
   'Hour of Liberation',
-  'Three Day Fasting & Prayer',
+  'Three Days Only Water Fasting & Prayer',
   'Uncategorized',
 ];
 

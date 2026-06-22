@@ -6,7 +6,7 @@ import db from '../db.js';
 export const CATEGORIES = {
   WEDNESDAY: 'Wednesday Miracle Service',
   SATURDAY: 'Hour of Liberation',
-  FASTING: 'Three Day Fasting & Prayer',
+  FASTING: 'Three Days Only Water Fasting & Prayer',
   UNCATEGORIZED: 'Uncategorized',
 };
 
@@ -14,6 +14,8 @@ export const CATEGORIES = {
 // Idempotent: only matches the old label, so it's a no-op after the first run.
 db.prepare("UPDATE videos SET auto_category = 'Hour of Liberation' WHERE auto_category = 'Saturday Prayer Service'").run();
 db.prepare("UPDATE videos SET category_override = 'Hour of Liberation' WHERE category_override = 'Saturday Prayer Service'").run();
+db.prepare("UPDATE videos SET auto_category = 'Three Days Only Water Fasting & Prayer' WHERE auto_category = 'Three Day Fasting & Prayer'").run();
+db.prepare("UPDATE videos SET category_override = 'Three Days Only Water Fasting & Prayer' WHERE category_override = 'Three Day Fasting & Prayer'").run();
 
 // Decide a category from the video title first, then fall back to the weekday
 // it was published. Returns one of the CATEGORIES values.

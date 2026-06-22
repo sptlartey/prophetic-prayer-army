@@ -262,7 +262,7 @@ async function loadLinks() {
 const CATEGORY_ORDER = [
   'Wednesday Miracle Service',
   'Hour of Liberation',
-  'Three Day Fasting & Prayer',
+  'Three Days Only Water Fasting & Prayer',
 ];
 
 function videoCard(v) {
