@@ -1,5 +1,17 @@
 // The Prophetic Prayer Army — frontend behaviour.
 
+// Always start at the top on reload; smooth-scroll anchor links without adding hash to the URL
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href^="#"]');
+  if (!a) return;
+  const href = a.getAttribute('href');
+  e.preventDefault();
+  if (href === '#' || href === '#top') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+});
+
 // --- Helpers ---
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
