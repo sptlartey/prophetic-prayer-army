@@ -484,6 +484,23 @@ a.tile:hover .tile-cta em { transform: translateX(6px); }
 }
 .btn-paypal svg { width: 18px; height: 18px; fill: #003087; }
 .btn-paypal:hover { background: #f0b72f; border-color: #f0b72f; color: #002868; box-shadow: 0 8px 20px rgba(0,48,135,.25); }
+
+/* Zelle giving button */
+.btn-zelle {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  background: #6d1ed4; color: #fff; border-color: #6d1ed4; width: 100%;
+}
+.btn-zelle svg { width: 18px; height: 18px; fill: #fff; }
+.btn-zelle:hover { background: #5a18b0; border-color: #5a18b0; box-shadow: 0 8px 20px rgba(109,30,212,.25); }
+
+/* Cash App giving button */
+.btn-cashapp {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  background: #00d632; color: #fff; border-color: #00d632; width: 100%;
+}
+.btn-cashapp svg { width: 18px; height: 18px; fill: #fff; }
+.btn-cashapp:hover { background: #00b82b; border-color: #00b82b; box-shadow: 0 8px 20px rgba(0,214,50,.25); }
+
 .give-or {
   display: flex; align-items: center; gap: 12px; margin: 4px 0;
   color: var(--muted); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
