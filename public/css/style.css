@@ -485,30 +485,6 @@ a.tile:hover .tile-cta em { transform: translateX(6px); }
 .btn-paypal svg { width: 18px; height: 18px; fill: #003087; }
 .btn-paypal:hover { background: #f0b72f; border-color: #f0b72f; color: #002868; box-shadow: 0 8px 20px rgba(0,48,135,.25); }
 
-/* Zelle info card */
-.zelle-card {
-  background: #f5f0fc; border: 1.5px solid #c9a8f0; border-radius: 6px;
-  padding: 14px 16px; margin-bottom: 2px;
-  animation: fadeSlideIn .18s ease;
-}
-.zelle-card.hidden { display: none; }
-.zelle-card-inner { display: flex; align-items: center; gap: 12px; }
-.zelle-card-inner > svg { width: 22px; height: 22px; fill: #6d1ed4; flex-shrink: 0; }
-.zelle-card-text { display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0; }
-.zelle-card-label { font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: #7c3aed; font-weight: 600; }
-.zelle-card-name { font-size: .88rem; font-weight: 600; color: var(--ink); }
-.zelle-card-number { font-size: 1rem; font-weight: 700; color: #6d1ed4; letter-spacing: .02em; }
-.zelle-copy-btn {
-  display: inline-flex; align-items: center; gap: 5px;
-  background: #6d1ed4; color: #fff; border: none; border-radius: 4px;
-  padding: 7px 12px; font-size: .72rem; font-weight: 600; letter-spacing: .06em;
-  text-transform: uppercase; cursor: pointer; flex-shrink: 0;
-  transition: background .15s ease;
-}
-.zelle-copy-btn svg { width: 13px; height: 13px; }
-.zelle-copy-btn:hover { background: #5a18b0; }
-@keyframes fadeSlideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
-
 /* Zelle + Cash App — side-by-side secondary row */
 .give-alt-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .btn-zelle {
