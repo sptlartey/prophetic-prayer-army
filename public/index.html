@@ -242,15 +242,16 @@
             Give with PayPal
           </button>
           <div class="give-or"><span>or</span></div>
-          <button class="btn btn-zelle" type="button" id="zelleBtn">
-            <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.5 16.5h-7l4.5-6H8.5v-3h7l-4.5 6H17.5v3z"/></svg>
-            Give with Zelle
-          </button>
-          <div class="give-or"><span>or</span></div>
-          <button class="btn btn-cashapp" type="button" id="cashappBtn">
-            <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M23.59 3.48A5 5 0 0 0 20.52.41C19.24.01 17.78 0 15 0H9C6.22 0 4.76.01 3.48.41A5 5 0 0 0 .41 3.48C.01 4.76 0 6.22 0 9v6c0 2.78.01 4.24.41 5.52a5 5 0 0 0 3.07 3.07C4.76 23.99 6.22 24 9 24h6c2.78 0 4.24-.01 5.52-.41a5 5 0 0 0 3.07-3.07C23.99 19.24 24 17.78 24 15V9c0-2.78-.01-4.24-.41-5.52zM15.13 7.5l-.6-1.8a.5.5 0 0 0-.48-.35H9.95a.5.5 0 0 0-.49.39L9.1 7.5H7.5l1.73-5.18A1.5 1.5 0 0 1 10.67 1.5h2.66a1.5 1.5 0 0 1 1.44 1.07L16.5 7.5h-1.37zm.87 9a4.5 4.5 0 0 1-4 2.5 4.5 4.5 0 0 1-4-2.5H6.5l.5-1.5H7a4.5 4.5 0 0 1 0-1H6.5l.5-1.5H8a4.5 4.5 0 0 1 8 0h1.5l.5 1.5H17a4.5 4.5 0 0 1 0 1h.5l.5 1.5H16zm-4-5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>
-            Give with Cash App
-          </button>
+          <div class="give-alt-row">
+            <button class="btn btn-zelle" type="button" id="zelleBtn">
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.5 16.5h-7l4.5-6H8.5v-3h7l-4.5 6H17.5v3z"/></svg>
+              Zelle
+            </button>
+            <button class="btn btn-cashapp" type="button" id="cashappBtn">
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M23.59 3.48A5 5 0 0 0 20.52.41C19.24.01 17.78 0 15 0H9C6.22 0 4.76.01 3.48.41A5 5 0 0 0 .41 3.48C.01 4.76 0 6.22 0 9v6c0 2.78.01 4.24.41 5.52a5 5 0 0 0 3.07 3.07C4.76 23.99 6.22 24 9 24h6c2.78 0 4.24-.01 5.52-.41a5 5 0 0 0 3.07-3.07C23.99 19.24 24 17.78 24 15V9c0-2.78-.01-4.24-.41-5.52zM15.13 7.5l-.6-1.8a.5.5 0 0 0-.48-.35H9.95a.5.5 0 0 0-.49.39L9.1 7.5H7.5l1.73-5.18A1.5 1.5 0 0 1 10.67 1.5h2.66a1.5 1.5 0 0 1 1.44 1.07L16.5 7.5h-1.37zm.87 9a4.5 4.5 0 0 1-4 2.5 4.5 4.5 0 0 1-4-2.5H6.5l.5-1.5H7a4.5 4.5 0 0 1 0-1H6.5l.5-1.5H8a4.5 4.5 0 0 1 8 0h1.5l.5 1.5H17a4.5 4.5 0 0 1 0 1h.5l.5 1.5H16zm-4-5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>
+              Cash App
+            </button>
+          </div>
           <!-- Card (Stripe) giving hidden for now; PayPal is the active option.
                To re-enable later, remove the "hidden" class below and set a Stripe key. -->
           <div class="give-or hidden"><span>or pay by card</span></div>
