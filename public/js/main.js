@@ -412,11 +412,10 @@ $('#paypalBtn')?.addEventListener('click', () => {
   window.open(url, '_blank', 'noopener');
 });
 
-// --- Zelle giving: toggle info card with copy-to-clipboard ---
+// --- Zelle giving: open Zelle payment page ---
+const ZELLE_URL = 'https://enroll.zellepay.com/qr-codes?data=ewogICAgIm5hbWUiOiAiUk9TRSIsCiAgICAiYWN0aW9uIjogInBheW1lbnQiLAogICAgInRva2VuIjogIjE1NjcyOTA5ODczIgp9';
 $('#zelleBtn')?.addEventListener('click', () => {
-  const card = $('#zelleCard');
-  if (!card) return;
-  card.classList.toggle('hidden');
+  window.open(ZELLE_URL, '_blank', 'noopener,noreferrer');
 });
 $('#zelleCopyBtn')?.addEventListener('click', () => {
   navigator.clipboard.writeText('+15672909873').then(() => {
