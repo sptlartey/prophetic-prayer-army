@@ -558,6 +558,22 @@ if (calSub) calSub.href = 'webcal://' + location.host + '/api/calendar.ics';
 // Close any open per-event calendar menus when clicking elsewhere.
 document.addEventListener('click', () => $$('.cal-menu').forEach((m) => { m.hidden = true; }));
 
+// WhatsApp picker — single icon, popup selects Community or Channel.
+document.addEventListener('click', (e) => {
+  const trigger = e.target.closest('.wa-trigger');
+  $$('.wa-picker').forEach((p) => {
+    if (p.querySelector('.wa-trigger') !== trigger) {
+      p.classList.remove('open');
+      p.querySelector('.wa-trigger').setAttribute('aria-expanded', 'false');
+    }
+  });
+  if (trigger) {
+    const picker = trigger.closest('.wa-picker');
+    const isOpen = picker.classList.toggle('open');
+    trigger.setAttribute('aria-expanded', String(isOpen));
+  }
+});
+
 // --- Init ---
 initCarousel();
 initBackToTop();
