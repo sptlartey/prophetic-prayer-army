@@ -556,6 +556,10 @@ a.tile:hover .tile-cta em { transform: translateX(6px); }
 .social-whatsapp:hover  { background: #25D366; border-color: #25D366; }
 .social-instagram:hover { background: #E1306C; border-color: #E1306C; }
 .social-youtube:hover   { background: #FF0000; border-color: #FF0000; }
+.social-twitch:hover    { background: #9146FF; border-color: #9146FF; }
+.social-icon-group { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.social-icon-cap { font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--gold-dark); }
+.site-footer .social-icon-cap { color: #c9bba3; }
 
 /* Footer variant on the dark background.
    Re-assert grid centering here: the generic ".site-footer a { display:block }"
