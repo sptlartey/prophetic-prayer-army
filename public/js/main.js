@@ -379,21 +379,12 @@ $('#contactForm')?.addEventListener('submit', async (e) => {
 });
 
 // --- Giving ---
-// Show the "pay by debit/credit card" option only once Stripe is configured.
+// Show the "pay by debit/credit card" option only once Flutterwave is configured.
 fetch('/api/giving/status').then((r) => r.json()).then((body) => {
   if (!body?.configured) return;
   $('#cardOr')?.classList.remove('hidden');
   $('#cardBtn')?.classList.remove('hidden');
 }).catch(() => {});
-
-$$('#amountChips .chip').forEach((chip) => {
-  chip.addEventListener('click', () => {
-    $$('#amountChips .chip').forEach((c) => c.classList.remove('active'));
-    chip.classList.add('active');
-    const amt = $('#g-amount');
-    if (amt) amt.value = chip.dataset.amount;
-  });
-});
 
 $('#giveForm')?.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -466,7 +457,7 @@ $('#cashappBtn')?.addEventListener('click', () => {
   window.open(url, '_blank', 'noopener');
 });
 
-// Show a note if returning from Stripe.
+// Show a note if returning from Flutterwave checkout.
 const params = new URLSearchParams(location.search);
 if (params.get('giving') === 'success') toast('Thank you for your generous offering! 🙌');
 if (params.get('giving') === 'cancelled') toast('Giving was cancelled.', true);

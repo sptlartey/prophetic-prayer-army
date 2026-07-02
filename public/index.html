@@ -221,12 +221,6 @@
         <h2>Give an offering</h2>
         <p class="lead">Your generosity fuels the prayer movement &mdash; sustaining our services, outreaches, and the spread of the gospel.</p>
         <form class="form" id="giveForm" style="margin-top:8px">
-          <div class="amount-row" id="amountChips">
-            <span class="chip" data-amount="25">$25</span>
-            <span class="chip" data-amount="50">$50</span>
-            <span class="chip" data-amount="100">$100</span>
-            <span class="chip" data-amount="250">$250</span>
-          </div>
           <div class="field">
             <label for="g-amount">Amount (USD) *</label>
             <input type="number" id="g-amount" name="amount" min="1" step="1" required />
@@ -269,8 +263,8 @@
               Cash App
             </button>
           </div>
-          <!-- Card (Stripe) giving — shown only once /api/giving/status reports a
-               Stripe key is configured (see main.js). -->
+          <!-- Card (Flutterwave) giving — shown only once /api/giving/status reports a
+               Flutterwave key is configured (see main.js). -->
           <div class="give-or hidden" id="cardOr"><span>or pay by card</span></div>
           <button class="btn btn--ghost hidden" type="submit" id="cardBtn">
             <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
