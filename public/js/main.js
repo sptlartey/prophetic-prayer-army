@@ -379,6 +379,13 @@ $('#contactForm')?.addEventListener('submit', async (e) => {
 });
 
 // --- Giving ---
+// Show the "pay by debit/credit card" option only once Stripe is configured.
+fetch('/api/giving/status').then((r) => r.json()).then((body) => {
+  if (!body?.configured) return;
+  $('#cardOr')?.classList.remove('hidden');
+  $('#cardBtn')?.classList.remove('hidden');
+}).catch(() => {});
+
 $$('#amountChips .chip').forEach((chip) => {
   chip.addEventListener('click', () => {
     $$('#amountChips .chip').forEach((c) => c.classList.remove('active'));

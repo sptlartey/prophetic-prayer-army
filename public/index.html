@@ -269,10 +269,13 @@
               Cash App
             </button>
           </div>
-          <!-- Card (Stripe) giving hidden for now; PayPal is the active option.
-               To re-enable later, remove the "hidden" class below and set a Stripe key. -->
-          <div class="give-or hidden"><span>or pay by card</span></div>
-          <button class="btn btn--ghost hidden" type="submit">Give by Card</button>
+          <!-- Card (Stripe) giving — shown only once /api/giving/status reports a
+               Stripe key is configured (see main.js). -->
+          <div class="give-or hidden" id="cardOr"><span>or pay by card</span></div>
+          <button class="btn btn--ghost hidden" type="submit" id="cardBtn">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            Give by Debit or Credit Card
+          </button>
           <p class="form-msg" id="giveMsg" role="status"></p>
         </form>
       </div>
