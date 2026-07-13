@@ -1,9 +1,10 @@
 // Lightweight admin: single shared password (from .env), signed cookie session,
 // and endpoints to manage events, prayer requests, and video categories.
 import { Router } from 'express';
+import { DateTime } from 'luxon';
 import db from '../db.js';
 import { CATEGORIES, refreshVideos } from '../services/youtube.js';
-import { serviceConfigs } from './events.js';
+import { serviceConfigs, ZONE } from './events.js';
 import { LINK_KEYS, getLinks } from './settings.js';
 
 const router = Router();
@@ -61,10 +62,27 @@ router.get('/api/admin/events', requireAdmin, (req, res) => {
   res.json(db.prepare('SELECT * FROM events ORDER BY starts_at ASC').all());
 });
 
+// The "Date & time" field has no timezone of its own — it's always read as ET
+// (matching how the public /api/events feed interprets it, and how the
+// recurring services are anchored). If the entered value already fell off the
+// public feed (its ET calendar day is over), saving would succeed but the
+// event would silently never appear on the site — catch that here instead.
+function pastInET(startsAt) {
+  const start = DateTime.fromISO(startsAt, { zone: ZONE });
+  if (!start.isValid) return true;
+  const removeAt = start.startOf('day').plus({ days: 1 });
+  return removeAt <= DateTime.utc();
+}
+
 router.post('/api/admin/events', requireAdmin, (req, res) => {
   const { title, starts_at, location, description } = req.body || {};
   if (!title?.trim() || !starts_at?.trim()) {
     return res.status(400).json({ error: 'Title and start date/time are required.' });
+  }
+  if (pastInET(starts_at.trim())) {
+    return res.status(400).json({
+      error: 'That date/time has already passed in Eastern Time (ET) — the site schedules events in ET, so this would never show on the page. Check the date, or account for the difference from ET.',
+    });
   }
   const info = db
     .prepare('INSERT INTO events (title, starts_at, location, description) VALUES (?, ?, ?, ?)')
@@ -76,6 +94,11 @@ router.put('/api/admin/events/:id', requireAdmin, (req, res) => {
   const { title, starts_at, location, description } = req.body || {};
   if (!title?.trim() || !starts_at?.trim()) {
     return res.status(400).json({ error: 'Title and start date/time are required.' });
+  }
+  if (pastInET(starts_at.trim())) {
+    return res.status(400).json({
+      error: 'That date/time has already passed in Eastern Time (ET) — the site schedules events in ET, so this would never show on the page. Check the date, or account for the difference from ET.',
+    });
   }
   db.prepare('UPDATE events SET title = ?, starts_at = ?, location = ?, description = ? WHERE id = ?')
     .run(title.trim(), starts_at.trim(), location?.trim() || null, description?.trim() || null, req.params.id);

@@ -10,7 +10,7 @@ import { DateTime } from 'luxon';
 import db from '../db.js';
 
 const router = Router();
-const ZONE = 'America/New_York';
+export const ZONE = 'America/New_York';
 
 // Recurring services. weekday uses Luxon numbering: 1=Mon … 7=Sun.
 export const RECURRING = [
