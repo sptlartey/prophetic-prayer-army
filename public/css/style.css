@@ -566,12 +566,17 @@ a.tile:hover .tile-cta em { transform: translateX(6px); }
 .momo-card-note {
   margin: 12px 0 6px; font-size: .74rem; color: var(--muted);
 }
-.remit-badges { display: flex; flex-wrap: wrap; gap: 8px; }
+.remit-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .remit-badge {
-  display: inline-flex; align-items: center;
+  display: inline-flex; align-items: center; gap: 6px;
   background: #fff; border: 1px solid #e0c957; border-radius: 999px;
-  padding: 5px 12px; font-size: .72rem; font-weight: 600; color: #7a6300;
+  padding: 7px 14px; font-size: .72rem; font-weight: 600; color: #7a6300;
 }
+.momo-card .remit-logo { width: auto; height: 18px; object-fit: contain; background: none; box-shadow: none; border-radius: 0; display: block; }
+.momo-card .remit-logo--taptapsend { height: 20px; }
+.momo-card .remit-logo--worldremit { height: 15px; }
+.momo-card .remit-logo--lemfi { height: 16px; }
+.momo-card .remit-logo--sendwave { height: 13px; }
 
 /* Social media icons (Join the army + footer) */
 .join-social { margin: 22px 0 26px; }
