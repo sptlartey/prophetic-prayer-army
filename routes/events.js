@@ -43,6 +43,16 @@ export const RECURRING = [
     location: 'Online',
     description: 'A consecrated three-day fast seeking the face of God for breakthrough.',
   },
+  {
+    key: 'operation1000',
+    title: 'Operation 1000 souls campaign',
+    type: 'weekdayRange',
+    weekday: 1, // Monday
+    time: '00:00',
+    durationHours: 120, // Mon 00:00 → Sat 00:00 ET, i.e. all day Mon-Fri
+    location: 'Online',
+    description: 'This is an operation to win 1000 souls for God',
+  },
 ];
 
 // Seed the editable settings from the defaults the first time (idempotent).
@@ -80,6 +90,7 @@ const cleanupTitles = [
   'Saturday Prayer Service',
   'Three Days Only Water Fasting & Prayer',
   'Three Days Only Water Fast & Prayer',
+  'Operation 1000 souls campaign',
 ];
 db.prepare(
   `DELETE FROM events WHERE title IN (${cleanupTitles.map(() => '?').join(',')})`
@@ -121,6 +132,23 @@ function weeklyOccurrence(svc, now) {
   return { start, end, removeAt };
 }
 
+// Weekly, spanning multiple full days from the start weekday (e.g. Mon 00:00 →
+// Sat 00:00 ET for an "all day Mon-Fri" campaign). Unlike weeklyOccurrence,
+// removeAt is the actual end — no same-day lingering buffer, since the event
+// already runs through the end of its last day.
+function weekdayRangeOccurrence(svc, now) {
+  const today = now.setZone(ZONE).startOf('day');
+  const [hh, mm] = svc.time.split(':').map(Number);
+  const diff = (svc.weekday - today.weekday + 7) % 7;
+  let start = today.plus({ days: diff }).set({ hour: hh, minute: mm });
+  let end = start.plus({ hours: svc.durationHours });
+  if (end <= now) {
+    start = start.plus({ weeks: 1 });
+    end = start.plus({ hours: svc.durationHours });
+  }
+  return { start, end, removeAt: end };
+}
+
 // First Friday of the month, running Fri → Sunday midnight (remove Mon 00:00 ET).
 function firstFridayOccurrence(svc, now) {
   const [hh, mm] = svc.time.split(':').map(Number);
@@ -145,7 +173,9 @@ export function recurringEvents() {
   const now = DateTime.utc();
   return RECURRING.map((base) => {
     const svc = merged(base);
-    const occ = svc.type === 'weekly' ? weeklyOccurrence(svc, now) : firstFridayOccurrence(svc, now);
+    const occ = svc.type === 'weekly' ? weeklyOccurrence(svc, now)
+      : svc.type === 'weekdayRange' ? weekdayRangeOccurrence(svc, now)
+      : firstFridayOccurrence(svc, now);
     const start = occ.start.toUTC().toISO();
     return {
       id: `${svc.key}-${start}`,
