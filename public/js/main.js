@@ -438,6 +438,21 @@ $('#zelleCopyBtn')?.addEventListener('click', () => {
   });
 });
 
+// --- MTN Mobile Money (MoMo): reveal the name/number card ---
+$('#momoBtn')?.addEventListener('click', () => {
+  $('#momoCard')?.classList.toggle('hidden');
+});
+$('#momoCopyBtn')?.addEventListener('click', () => {
+  navigator.clipboard.writeText('+233552937788').then(() => {
+    const btn = $('#momoCopyBtn');
+    if (!btn) return;
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    btn.style.background = '#2e8b00';
+    setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; }, 2000);
+  });
+});
+
 // --- Cash App giving: open $RoseMaKo ---
 const CASHAPP_TAG = '$RoseMaKo';
 $('#cashappBtn')?.addEventListener('click', () => {

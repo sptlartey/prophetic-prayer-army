@@ -535,6 +535,44 @@ a.tile:hover .tile-cta em { transform: translateX(6px); }
 .give-or::before, .give-or::after { content: ''; flex: 1; height: 1px; background: var(--line); }
 .giveForm .btn, #giveForm .btn { width: 100%; }
 
+/* MTN Mobile Money (MoMo) giving */
+.btn-momo {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  background: #ffcc00; color: #1a1a1a; border-color: #ffcc00;
+}
+.btn-momo svg { width: 17px; height: 17px; stroke: #1a1a1a; }
+.btn-momo:hover { background: #e6b800; border-color: #e6b800; box-shadow: 0 8px 20px rgba(230,184,0,.3); }
+.momo-card {
+  background: #fffbe6; border: 1.5px solid #ffe066; border-radius: 6px;
+  padding: 14px 16px; margin-bottom: 2px;
+  animation: fadeSlideIn .18s ease;
+}
+.momo-card.hidden { display: none; }
+.momo-card-inner { display: flex; align-items: center; gap: 12px; }
+.momo-card-inner > svg { width: 22px; height: 22px; stroke: #997a00; flex-shrink: 0; }
+.momo-card-text { display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0; }
+.momo-card-label { font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: #997a00; font-weight: 600; }
+.momo-card-name { font-size: .88rem; font-weight: 600; color: var(--ink); }
+.momo-card-number { font-size: 1rem; font-weight: 700; color: #997a00; letter-spacing: .02em; }
+.momo-copy-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #997a00; color: #fff; border: none; border-radius: 4px;
+  padding: 7px 12px; font-size: .72rem; font-weight: 600; letter-spacing: .06em;
+  text-transform: uppercase; cursor: pointer; flex-shrink: 0;
+  transition: background .15s ease;
+}
+.momo-copy-btn svg { width: 13px; height: 13px; }
+.momo-copy-btn:hover { background: #7a6300; }
+.momo-card-note {
+  margin: 12px 0 6px; font-size: .74rem; color: var(--muted);
+}
+.remit-badges { display: flex; flex-wrap: wrap; gap: 8px; }
+.remit-badge {
+  display: inline-flex; align-items: center;
+  background: #fff; border: 1px solid #e0c957; border-radius: 999px;
+  padding: 5px 12px; font-size: .72rem; font-weight: 600; color: #7a6300;
+}
+
 /* Social media icons (Join the army + footer) */
 .join-social { margin: 22px 0 26px; }
 .join-social-label {

@@ -263,6 +263,33 @@
               Cash App
             </button>
           </div>
+          <div class="give-or"><span>or give via Mobile Money</span></div>
+          <button class="btn btn-momo" type="button" id="momoBtn">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="6" y1="18" x2="18" y2="18"/></svg>
+            MTN Mobile Money (MoMo)
+          </button>
+          <!-- MoMo info card (shown on click) -->
+          <div class="momo-card hidden" id="momoCard">
+            <div class="momo-card-inner">
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="6" y1="18" x2="18" y2="18"/></svg>
+              <div class="momo-card-text">
+                <span class="momo-card-label">Send via MTN MoMo to</span>
+                <span class="momo-card-name">Agyemang Kelly Nana</span>
+                <span class="momo-card-number" id="momoNumber">+233 552937788</span>
+              </div>
+              <button class="momo-copy-btn" id="momoCopyBtn" type="button" aria-label="Copy phone number">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy
+              </button>
+            </div>
+            <p class="momo-card-note">Giving from outside Ghana? Send straight to this number with:</p>
+            <div class="remit-badges">
+              <span class="remit-badge">TapTap Send</span>
+              <span class="remit-badge">WorldRemit</span>
+              <span class="remit-badge">LemFi</span>
+              <span class="remit-badge">Sendwave</span>
+            </div>
+          </div>
           <!-- Card (Flutterwave) giving — shown only once /api/giving/status reports a
                Flutterwave key is configured (see main.js). -->
           <div class="give-or hidden" id="cardOr"><span>or pay by card</span></div>
