@@ -55,7 +55,7 @@ db.exec(`
     currency        TEXT DEFAULT 'usd',
     donor_name      TEXT,
     donor_email     TEXT,
-    payment_ref     TEXT,                     -- processor's transaction reference (tx_ref)
+    stripe_session  TEXT,
     status          TEXT DEFAULT 'pending',   -- pending | completed
     created_at      TEXT DEFAULT (datetime('now'))
   );
@@ -110,14 +110,6 @@ db.exec(`
 const donationCols = db.prepare('PRAGMA table_info(donations)').all().map((c) => c.name);
 if (!donationCols.includes('method')) {
   db.exec("ALTER TABLE donations ADD COLUMN method TEXT DEFAULT 'card'");
-}
-
-// Migration: the payment processor's own reference for a gift (was
-// stripe_session; renamed when card giving moved from Stripe to Flutterwave).
-if (donationCols.includes('stripe_session') && !donationCols.includes('payment_ref')) {
-  db.exec('ALTER TABLE donations RENAME COLUMN stripe_session TO payment_ref');
-} else if (!donationCols.includes('payment_ref')) {
-  db.exec('ALTER TABLE donations ADD COLUMN payment_ref TEXT');
 }
 
 // Migration: allow an admin-editable title per recurring service.
