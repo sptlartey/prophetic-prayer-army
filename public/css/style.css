@@ -574,7 +574,7 @@ a.tile:hover .tile-cta em { transform: translateX(6px); }
 }
 .momo-card .remit-logo { width: auto; height: 18px; object-fit: contain; background: none; box-shadow: none; border-radius: 0; display: block; }
 .momo-card .remit-logo--taptapsend { height: 20px; }
-.momo-card .remit-logo--worldremit { height: 15px; }
+.momo-card .remit-logo--worldremit { height: 22.5px; }
 .momo-card .remit-logo--lemfi { height: 16px; }
 .momo-card .remit-logo--sendwave { height: 13px; }
 
