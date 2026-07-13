@@ -112,6 +112,13 @@ if (!donationCols.includes('method')) {
   db.exec("ALTER TABLE donations ADD COLUMN method TEXT DEFAULT 'card'");
 }
 
+// Repair: an earlier bad deploy briefly shipped a payment_ref rename of this
+// column without the app code to match, so some databases already have
+// payment_ref instead of stripe_session. Bring them back in line.
+if (donationCols.includes('payment_ref') && !donationCols.includes('stripe_session')) {
+  db.exec('ALTER TABLE donations RENAME COLUMN payment_ref TO stripe_session');
+}
+
 // Migration: allow an admin-editable title per recurring service.
 const svcCols = db.prepare('PRAGMA table_info(service_settings)').all().map((c) => c.name);
 if (!svcCols.includes('title')) {
