@@ -7,6 +7,7 @@ export const CATEGORIES = {
   WEDNESDAY: 'Wednesday Miracle Service',
   SATURDAY: 'Hour of Liberation',
   FASTING: 'Three Days Only Water Fasting & Prayer',
+  OPERATION1000: 'Operation 1000 souls campaign',
   UNCATEGORIZED: 'Uncategorized',
 };
 
@@ -23,6 +24,9 @@ export function categorize(title = '', publishedAt = '') {
   const t = title.toLowerCase();
 
   // 1) Title keyword rules (most reliable).
+  //    Operation 1000 Souls Campaign — checked first since it's tagged with an
+  //    explicit hashtag and would otherwise fall through to the weekday guess.
+  if (/operation\s*1000\s*souls/.test(t)) return CATEGORIES.OPERATION1000;
   //    Fasting: "fast", "three/3 day", and the ministry's "Lamentation Fast" series.
   if (/\bfast(ing)?\b|three[\s-]?day|3[\s-]?day|lamentation/.test(t)) return CATEGORIES.FASTING;
   //    Wednesday Miracle Service.
@@ -43,6 +47,19 @@ export function categorize(title = '', publishedAt = '') {
 
   // 3) Couldn't tell — flag for the admin to assign manually.
   return CATEGORIES.UNCATEGORIZED;
+}
+
+// Backfill: recompute auto_category for already-imported, non-overridden
+// videos whenever the categorize() rules above change (e.g. a new keyword
+// rule added after those videos were first fetched), so a correction takes
+// effect immediately instead of waiting for the next YouTube refresh.
+for (const v of db.prepare(
+  'SELECT video_id, title, published_at, auto_category FROM videos WHERE category_override IS NULL'
+).all()) {
+  const correct = categorize(v.title, v.published_at);
+  if (correct !== v.auto_category) {
+    db.prepare('UPDATE videos SET auto_category = ? WHERE video_id = ?').run(correct, v.video_id);
+  }
 }
 
 function feedUrl() {
