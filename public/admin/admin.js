@@ -2,12 +2,8 @@
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
-const CATEGORIES = [
-  'Wednesday Miracle Service',
-  'Hour of Liberation',
-  'Three Days Only Water Fasting & Prayer',
-  'Uncategorized',
-];
+// Loaded from /api/admin/categories — the video library's admin-creatable folders.
+let CATEGORIES = [];
 
 function esc(str = '') {
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -208,7 +204,28 @@ function resetEventForm() {
   $('#ev-cancel').classList.add('hidden');
 }
 
+async function loadCategories() {
+  const { body } = await api('/api/admin/categories');
+  CATEGORIES = body || [];
+}
+
+$('#addCategoryBtn')?.addEventListener('click', async () => {
+  const input = $('#newCategoryName');
+  const name = input.value.trim();
+  if (!name) return;
+  const { ok, body } = await api('/api/admin/categories', { method: 'POST', body: JSON.stringify({ name }) });
+  if (ok) {
+    input.value = '';
+    CATEGORIES = body.categories || CATEGORIES;
+    loadVideos();
+  } else {
+    alert(body.error || 'Could not add category.');
+  }
+});
+$('#newCategoryName')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $('#addCategoryBtn').click(); } });
+
 async function loadVideos() {
+  await loadCategories();
   const { body } = await api('/api/admin/videos');
   $('#videoRows').innerHTML = (body || []).map((v) => {
     const current = v.category_override || '';

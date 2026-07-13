@@ -153,6 +153,10 @@
           <button class="btn" id="refreshVideos">↻ Refresh from YouTube</button>
         </div>
         <p class="muted" id="videoHint">Videos auto-sort by title and date. Use the dropdown to manually reassign any that landed in the wrong category. Choose "(auto)" to revert to the automatic guess.</p>
+        <div class="flex" style="margin:10px 0;gap:8px;">
+          <input id="newCategoryName" placeholder="New category name" style="flex:1;" />
+          <button class="btn small" id="addCategoryBtn" type="button">+ Add category</button>
+        </div>
         <div id="videoNote"></div>
         <table><thead><tr><th>Published</th><th>Title</th><th>Auto</th><th>Category (override)</th></tr></thead>
           <tbody id="videoRows"></tbody></table>

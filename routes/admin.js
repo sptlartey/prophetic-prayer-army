@@ -3,7 +3,7 @@
 import { Router } from 'express';
 import { DateTime } from 'luxon';
 import db from '../db.js';
-import { CATEGORIES, refreshVideos } from '../services/youtube.js';
+import { CATEGORIES, refreshVideos, listCategories, addCategory } from '../services/youtube.js';
 import { serviceConfigs, ZONE } from './events.js';
 import { LINK_KEYS, getLinks } from './settings.js';
 
@@ -133,7 +133,7 @@ router.post('/api/admin/videos/refresh', requireAdmin, async (req, res) => {
 
 router.patch('/api/admin/videos/:videoId/category', requireAdmin, (req, res) => {
   const { category } = req.body || {};
-  const valid = [...Object.values(CATEGORIES), null, ''];
+  const valid = [...listCategories(), CATEGORIES.UNCATEGORIZED, null, ''];
   if (!valid.includes(category)) return res.status(400).json({ error: 'Invalid category.' });
   // Empty string clears the override and reverts to the auto guess.
   db.prepare('UPDATE videos SET category_override = ? WHERE video_id = ?')
@@ -142,7 +142,16 @@ router.patch('/api/admin/videos/:videoId/category', requireAdmin, (req, res) => 
 });
 
 router.get('/api/admin/categories', requireAdmin, (req, res) => {
-  res.json(Object.values(CATEGORIES));
+  res.json([...listCategories(), CATEGORIES.UNCATEGORIZED]);
+});
+
+router.post('/api/admin/categories', requireAdmin, (req, res) => {
+  const { name } = req.body || {};
+  if (!name?.trim()) return res.status(400).json({ error: 'Category name is required.' });
+  if (name.trim() === CATEGORIES.UNCATEGORIZED) {
+    return res.status(400).json({ error: '"Uncategorized" is reserved.' });
+  }
+  res.status(201).json({ ok: true, categories: [...addCategory(name.trim()), CATEGORIES.UNCATEGORIZED] });
 });
 
 // --- Recurring services: edit time/details + cancel an occurrence ---

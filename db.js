@@ -55,7 +55,7 @@ db.exec(`
     currency        TEXT DEFAULT 'usd',
     donor_name      TEXT,
     donor_email     TEXT,
-    stripe_session  TEXT,
+    payment_ref     TEXT,                     -- processor's transaction reference (tx_ref)
     status          TEXT DEFAULT 'pending',   -- pending | completed
     created_at      TEXT DEFAULT (datetime('now'))
   );
@@ -94,6 +94,15 @@ db.exec(`
     key                TEXT PRIMARY KEY,
     value              TEXT
   );
+
+  -- Video library categories (the "folders" shown on the site). Admin-creatable;
+  -- position controls display order.
+  CREATE TABLE IF NOT EXISTS video_categories (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    name        TEXT UNIQUE NOT NULL,
+    position    INTEGER NOT NULL,
+    created_at  TEXT DEFAULT (datetime('now'))
+  );
 `);
 
 // Migration: track which method a gift used (card | paypal). Safe to run on
@@ -101,6 +110,14 @@ db.exec(`
 const donationCols = db.prepare('PRAGMA table_info(donations)').all().map((c) => c.name);
 if (!donationCols.includes('method')) {
   db.exec("ALTER TABLE donations ADD COLUMN method TEXT DEFAULT 'card'");
+}
+
+// Migration: the payment processor's own reference for a gift (was
+// stripe_session; renamed when card giving moved from Stripe to Flutterwave).
+if (donationCols.includes('stripe_session') && !donationCols.includes('payment_ref')) {
+  db.exec('ALTER TABLE donations RENAME COLUMN stripe_session TO payment_ref');
+} else if (!donationCols.includes('payment_ref')) {
+  db.exec('ALTER TABLE donations ADD COLUMN payment_ref TEXT');
 }
 
 // Migration: allow an admin-editable title per recurring service.
@@ -130,5 +147,18 @@ if (eventCount === 0) {
     'A consecrated three-day fast seeking the face of God for breakthrough.'
   );
 }
+
+// Seed the video library's default categories the first time (idempotent —
+// only inserts names that aren't already there, so admin-added categories or
+// renames are never touched).
+const seedCategory = db.prepare(
+  'INSERT OR IGNORE INTO video_categories (name, position) VALUES (?, ?)'
+);
+[
+  'Wednesday Miracle Service',
+  'Hour of Liberation',
+  'Three Days Only Water Fasting & Prayer',
+  'Operation 1000 souls campaign',
+].forEach((name, i) => seedCategory.run(name, i));
 
 export default db;

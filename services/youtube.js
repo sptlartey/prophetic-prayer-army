@@ -120,15 +120,33 @@ export function effectiveCategory(row) {
   return row.category_override || row.auto_category || CATEGORIES.UNCATEGORIZED;
 }
 
+// The video library's "folders", in display order. Admin-creatable via
+// POST /api/admin/categories — this is the single source of truth used by
+// both the admin dropdown and the public site, so a new category shows up
+// everywhere as soon as it's created (no more hardcoded lists to keep in sync).
+export function listCategories() {
+  return db.prepare('SELECT name FROM video_categories ORDER BY position ASC').all().map((r) => r.name);
+}
+
+// Add a new category if it doesn't already exist (case-insensitive). Returns
+// the full, current category list.
+export function addCategory(name) {
+  const exists = db.prepare('SELECT 1 FROM video_categories WHERE lower(name) = lower(?)').get(name);
+  if (!exists) {
+    const next = db.prepare('SELECT COALESCE(MAX(position), -1) + 1 AS pos FROM video_categories').get().pos;
+    db.prepare('INSERT INTO video_categories (name, position) VALUES (?, ?)').run(name, next);
+  }
+  return listCategories();
+}
+
 // All videos grouped by effective category, newest first within each group.
+// Every known category gets a group (even if empty) so it still shows up in
+// the admin dropdown; "Uncategorized" is always included as a catch-all.
 export function groupedVideos() {
   const rows = db.prepare('SELECT * FROM videos ORDER BY published_at DESC').all();
-  const groups = {
-    [CATEGORIES.WEDNESDAY]: [],
-    [CATEGORIES.SATURDAY]: [],
-    [CATEGORIES.FASTING]: [],
-    [CATEGORIES.UNCATEGORIZED]: [],
-  };
+  const groups = {};
+  for (const name of listCategories()) groups[name] = [];
+  groups[CATEGORIES.UNCATEGORIZED] = [];
   for (const r of rows) {
     const cat = effectiveCategory(r);
     (groups[cat] ||= []).push({

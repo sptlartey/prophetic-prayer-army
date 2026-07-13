@@ -259,12 +259,6 @@ async function loadLinks() {
 }
 
 // --- Videos ---
-const CATEGORY_ORDER = [
-  'Wednesday Miracle Service',
-  'Hour of Liberation',
-  'Three Days Only Water Fasting & Prayer',
-];
-
 function videoCard(v) {
   const when = v.published_at ? new Date(v.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
   return `
@@ -287,12 +281,14 @@ async function loadVideos() {
   const isFull = lib.dataset.full === 'true';
   // A service tile may link here with ?category=... to show just that service.
   const wanted = new URLSearchParams(location.search).get('category');
-  const activeCat = wanted && CATEGORY_ORDER.includes(wanted) ? wanted : null;
 
   try {
     const res = await fetch('/api/videos');
     const groups = await res.json();
-    let order = CATEGORY_ORDER.filter((cat) => (groups[cat] || []).length);
+    const activeCat = wanted && groups[wanted] ? wanted : null;
+    // Categories come pre-ordered from the backend; "Uncategorized" is an
+    // internal pending-review bucket and never shown publicly.
+    let order = Object.keys(groups).filter((cat) => cat !== 'Uncategorized' && groups[cat].length);
 
     // Filtered view (sermons page reached from a service tile): only that service.
     if (activeCat) order = order.filter((cat) => cat === activeCat);
