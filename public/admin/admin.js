@@ -80,7 +80,7 @@ async function loadServices() {
         <div><label>Description</label><input data-svc="${s.key}" data-f="description" value="${esc(s.description || '')}" /></div>
       </div>
       <div style="margin-top:10px">
-        <label>Reschedule next occurrence <span class="muted">(optional — moves only the next one to this exact date/time; leave blank for the automatic date. Clears itself after it passes.)</span></label>
+        <label>Reschedule the upcoming occurrence <span class="muted">(optional — moves the soonest upcoming service, the one shown as "Next:" above, to this exact date/time. Only affects that one; leave blank for the automatic date. Clears itself once it passes.)</span></label>
         <div class="flex" style="gap:8px;align-items:center">
           <input type="datetime-local" data-svc="${s.key}" data-f="nextOverride" value="${esc((s.nextOverride || '').slice(0, 16))}" style="flex:1" />
           <button type="button" class="btn small secondary" data-clear-override="${s.key}">Clear</button>
