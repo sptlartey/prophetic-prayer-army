@@ -20,7 +20,8 @@ const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 (function rotateAltars() {
   const altars = $$('.altars .altar');
   if (altars.length < 2) return;
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // Always cycle the highlight (it's a gentle color/glow); the CSS below drops
+  // the small lift for visitors who prefer reduced motion.
   let i = 0, timer = null;
   const show = (n) => altars.forEach((a, k) => a.classList.toggle('is-active', k === n));
   const start = () => { if (!timer) timer = setInterval(() => { i = (i + 1) % altars.length; show(i); }, 5000); };
