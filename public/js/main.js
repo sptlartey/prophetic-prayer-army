@@ -16,6 +16,25 @@ document.addEventListener('click', e => {
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
+// --- Four Altars: auto-rotate the highlight, one at a time every 5s ---
+(function rotateAltars() {
+  const altars = $$('.altars .altar');
+  if (altars.length < 2) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let i = 0, timer = null;
+  const show = (n) => altars.forEach((a, k) => a.classList.toggle('is-active', k === n));
+  const start = () => { if (!timer) timer = setInterval(() => { i = (i + 1) % altars.length; show(i); }, 5000); };
+  const stop = () => { clearInterval(timer); timer = null; };
+  show(0);
+  start();
+  // Let a hovering/focusing visitor take over; resume the cycle when they leave.
+  const wrap = $('.altars');
+  ['mouseenter', 'focusin'].forEach((e) => wrap.addEventListener(e, () => { stop(); altars.forEach((a) => a.classList.remove('is-active')); }));
+  ['mouseleave', 'focusout'].forEach((e) => wrap.addEventListener(e, () => { show(i); start(); }));
+  // Pause when the tab is hidden to avoid a jump on return.
+  document.addEventListener('visibilitychange', () => { document.hidden ? stop() : start(); });
+})();
+
 function toast(message, isError = false) {
   const el = $('#toast');
   if (!el) return;
