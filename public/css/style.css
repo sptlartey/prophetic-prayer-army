@@ -152,28 +152,20 @@ a { color: var(--gold-dark); text-decoration: none; }
   color: #f3ecdf;
   transition: color .25s ease, text-shadow .25s ease;
 }
-.altar:hover, .altar:focus-visible, .altar.is-active { transform: translateY(-3px); outline: none; }
-.altar:hover .altar-name, .altar:focus-visible .altar-name, .altar.is-active .altar-name { text-shadow: 0 0 18px currentColor; }
+.altar:hover, .altar:focus-visible { transform: translateY(-3px); outline: none; }
+.altar:hover .altar-name, .altar:focus-visible .altar-name { text-shadow: 0 0 18px currentColor; }
 .altar:hover .altar-name--answers,
 .altar:focus-visible .altar-name--answers,
-.altar.is-active .altar-name--answers,
 .altar:hover .altar-name--possibilities,
-.altar:focus-visible .altar-name--possibilities,
-.altar.is-active .altar-name--possibilities { color: var(--radar); }
+.altar:focus-visible .altar-name--possibilities { color: var(--radar); }
 .altar:hover .altar-name--solutions,
-.altar:focus-visible .altar-name--solutions,
-.altar.is-active .altar-name--solutions { color: #8ee06b; }
+.altar:focus-visible .altar-name--solutions { color: #8ee06b; }
 .altar:hover .altar-name--fire,
-.altar:focus-visible .altar-name--fire,
-.altar.is-active .altar-name--fire { color: #e69a3c; }
+.altar:focus-visible .altar-name--fire { color: #e69a3c; }
 @media (max-width: 560px) {
   .altars { max-width: 320px; }
   .altar { padding: 4px 14px; }
   .altar + .altar::before { display: none; }
-}
-/* Keep the highlight cycling but without positional movement for reduced motion. */
-@media (prefers-reduced-motion: reduce) {
-  .altar:hover, .altar:focus-visible, .altar.is-active { transform: none; }
 }
 
 /* Verse strip */
