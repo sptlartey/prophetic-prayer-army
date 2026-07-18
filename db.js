@@ -130,6 +130,12 @@ if (!svcCols.includes('live_link')) {
 if (!svcCols.includes('weekday')) {
   db.exec('ALTER TABLE service_settings ADD COLUMN weekday INTEGER');
 }
+// Migration: let an admin reschedule the NEXT occurrence to a specific date/time
+// (ET wall-clock, "YYYY-MM-DDTHH:MM"). Once it passes, it clears and the service
+// resumes its normal weekly rhythm.
+if (!svcCols.includes('next_override')) {
+  db.exec('ALTER TABLE service_settings ADD COLUMN next_override TEXT');
+}
 
 // Seed one example special event the first time the DB is created so the
 // landing page isn't empty. The weekly Wednesday/Saturday services are NOT

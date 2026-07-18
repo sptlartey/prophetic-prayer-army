@@ -114,7 +114,31 @@ function merged(svc) {
     location: s.location ?? svc.location,
     description: s.description ?? svc.description,
     liveLink: s.live_link || null,
+    nextOverride: s.next_override || null,
   };
+}
+
+// An admin-set one-off reschedule for the NEXT occurrence (ET wall-clock).
+// Returns null when there is none or it has already passed (in which case the
+// stored value is cleared so the normal weekly rhythm resumes).
+const clearOverrideStmt = db.prepare(
+  'UPDATE service_settings SET next_override = NULL WHERE service_key = ?'
+);
+function overrideOccurrence(svc, now) {
+  if (!svc.nextOverride) return null;
+  const start = DateTime.fromISO(svc.nextOverride, { zone: ZONE });
+  if (!start.isValid) return null;
+  const end = start.plus({ hours: svc.durationHours });
+  // Point-in-time services linger until midnight ET of the start day (like the
+  // weekly path); multi-day spans are gone once they actually end.
+  const removeAt = svc.type === 'weekly'
+    ? start.startOf('day').plus({ days: 1 })
+    : end;
+  if (removeAt <= now) {
+    clearOverrideStmt.run(svc.key);
+    return null;
+  }
+  return { start, end, removeAt };
 }
 
 // Next occurrence of a weekly service as Luxon DateTimes in ET.
@@ -173,9 +197,10 @@ export function recurringEvents() {
   const now = DateTime.utc();
   return RECURRING.map((base) => {
     const svc = merged(base);
-    const occ = svc.type === 'weekly' ? weeklyOccurrence(svc, now)
+    const occ = overrideOccurrence(svc, now) || (
+      svc.type === 'weekly' ? weeklyOccurrence(svc, now)
       : svc.type === 'weekdayRange' ? weekdayRangeOccurrence(svc, now)
-      : firstFridayOccurrence(svc, now);
+      : firstFridayOccurrence(svc, now));
     const start = occ.start.toUTC().toISO();
     return {
       id: `${svc.key}-${start}`,
@@ -209,6 +234,7 @@ export function serviceConfigs() {
       description: svc.description,
       liveLink: svc.liveLink,
       nextStart: evt?.start,
+      nextOverride: svc.nextOverride,
       cancelled: evt?.cancelled || false,
     };
   });

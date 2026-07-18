@@ -160,7 +160,7 @@ router.get('/api/admin/services', requireAdmin, (req, res) => {
 });
 
 router.put('/api/admin/services/:key', requireAdmin, (req, res) => {
-  const { title, time, durationHours, location, description, liveLink, weekday } = req.body || {};
+  const { title, time, durationHours, location, description, liveLink, weekday, nextOverride } = req.body || {};
   if (time && !/^\d{2}:\d{2}$/.test(time)) {
     return res.status(400).json({ error: 'Time must be in HH:MM (24-hour) format.' });
   }
@@ -170,6 +170,16 @@ router.put('/api/admin/services/:key', requireAdmin, (req, res) => {
   }
   const exists = db.prepare('SELECT 1 FROM service_settings WHERE service_key = ?').get(req.params.key);
   if (!exists) return res.status(404).json({ error: 'Unknown service.' });
+
+  // Reschedule the next occurrence (or clear it back to automatic). Set
+  // separately from the COALESCE update below so a blank value can clear it.
+  if (nextOverride !== undefined) {
+    const ov = typeof nextOverride === 'string' && nextOverride.trim() ? nextOverride.trim() : null;
+    if (ov && !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(ov)) {
+      return res.status(400).json({ error: 'Reschedule date must be a valid date & time.' });
+    }
+    db.prepare('UPDATE service_settings SET next_override = ? WHERE service_key = ?').run(ov, req.params.key);
+  }
   db.prepare(
     `UPDATE service_settings
        SET title = COALESCE(?, title),

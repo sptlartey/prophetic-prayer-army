@@ -80,6 +80,13 @@ async function loadServices() {
         <div><label>Description</label><input data-svc="${s.key}" data-f="description" value="${esc(s.description || '')}" /></div>
       </div>
       <div style="margin-top:10px">
+        <label>Reschedule next occurrence <span class="muted">(optional — moves only the next one to this exact date/time; leave blank for the automatic date. Clears itself after it passes.)</span></label>
+        <div class="flex" style="gap:8px;align-items:center">
+          <input type="datetime-local" data-svc="${s.key}" data-f="nextOverride" value="${esc((s.nextOverride || '').slice(0, 16))}" style="flex:1" />
+          <button type="button" class="btn small secondary" data-clear-override="${s.key}">Clear</button>
+        </div>
+      </div>
+      <div style="margin-top:10px">
         <label>Live Link <span class="muted">(optional — direct URL to this week's livestream, e.g. youtube.com/live/…)</span></label>
         <input data-svc="${s.key}" data-f="liveLink" value="${esc(s.liveLink || '')}" placeholder="https://youtube.com/live/abc123" style="width:100%" />
       </div>
@@ -98,6 +105,11 @@ async function loadServices() {
     $$(`[data-svc="${key}"]`, wrap).forEach((inp) => { payload[inp.dataset.f] = inp.value; });
     const { ok, body: r } = await api(`/api/admin/services/${key}`, { method: 'PUT', body: JSON.stringify(payload) });
     if (ok) loadServices(); else alert(r.error || 'Could not save.');
+  }));
+
+  $$('[data-clear-override]', wrap).forEach((btn) => btn.addEventListener('click', () => {
+    const input = $(`[data-svc="${btn.dataset.clearOverride}"][data-f="nextOverride"]`, wrap);
+    if (input) input.value = '';
   }));
 
   $$('[data-cancel]', wrap).forEach((btn) => btn.addEventListener('click', async () => {
