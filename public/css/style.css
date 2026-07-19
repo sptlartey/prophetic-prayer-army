@@ -171,9 +171,9 @@ a { color: var(--gold-dark); text-decoration: none; }
     max-width: none; box-sizing: border-box;
     padding: 0 6px; margin-top: 14px; margin-bottom: 20px;
   }
-  .altar { flex: 1 1 0; min-width: 0; padding: 4px 4px; }
-  .altar-eyebrow { font-size: .42rem; letter-spacing: .09em; white-space: nowrap; }
-  .altar-name { font-size: clamp(.55rem, 3vw, 1.25rem); white-space: nowrap; }
+  .altar { flex: 1 1 0; min-width: 0; padding: 4px 3px; }
+  .altar-eyebrow { font-size: .46rem; letter-spacing: .08em; white-space: nowrap; }
+  .altar-name { font-size: clamp(.66rem, 3.6vw, 1.3rem); white-space: nowrap; }
   .altar + .altar::before { display: block; }
 }
 
