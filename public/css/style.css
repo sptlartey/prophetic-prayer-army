@@ -143,13 +143,13 @@ a { color: var(--gold-dark); text-decoration: none; }
 .altar-eyebrow {
   display: block;
   font-size: .6rem; letter-spacing: .26em; text-transform: uppercase;
-  font-weight: 600; color: #e7dcc4; opacity: .82; margin-bottom: 2px;
+  font-weight: 600; color: #ffffff; opacity: .85; margin-bottom: 2px;
 }
 .altar-name {
   display: block;
   font-family: var(--serif); font-weight: 600;
   font-size: clamp(1.15rem, 2.4vw, 1.65rem); line-height: 1.1;
-  color: #f3ecdf;
+  color: #ffffff;
   transition: color .25s ease, text-shadow .25s ease;
 }
 .altar:hover, .altar:focus-visible { transform: translateY(-3px); outline: none; }
@@ -163,9 +163,21 @@ a { color: var(--gold-dark); text-decoration: none; }
 .altar:hover .altar-name--fire,
 .altar:focus-visible .altar-name--fire { color: #e69a3c; }
 @media (max-width: 560px) {
-  .altars { max-width: 320px; }
-  .altar { padding: 4px 14px; }
+  .altars {
+    display: grid; grid-template-columns: 1fr 1fr;
+    max-width: 330px; row-gap: 16px; margin: 16px auto 22px;
+  }
+  .altar { padding: 4px 10px; }
+  .altar-eyebrow { font-size: .55rem; letter-spacing: .2em; }
+  .altar-name { font-size: 1.3rem; }
+  /* Reset the flow separators; draw one clean divider between the two columns. */
   .altar + .altar::before { display: none; }
+  .altar:nth-child(even)::before {
+    content: ''; display: block;
+    position: absolute; left: 0; top: 12%; bottom: 12%;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(255,255,255,.4), transparent);
+  }
 }
 
 /* Verse strip */
