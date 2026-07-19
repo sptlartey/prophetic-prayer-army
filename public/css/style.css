@@ -163,21 +163,18 @@ a { color: var(--gold-dark); text-decoration: none; }
 .altar:hover .altar-name--fire,
 .altar:focus-visible .altar-name--fire { color: #e69a3c; }
 @media (max-width: 560px) {
+  /* Keep all four in one horizontal row; break out to full width and shrink
+     the text so the longest name ("Possibilities") still fits. */
   .altars {
-    display: grid; grid-template-columns: 1fr 1fr;
-    max-width: 330px; row-gap: 16px; margin: 16px auto 22px;
+    display: flex; flex-wrap: nowrap; align-items: stretch;
+    width: 100vw; position: relative; left: 50%; margin-left: -50vw;
+    max-width: none; box-sizing: border-box;
+    padding: 0 6px; margin-top: 14px; margin-bottom: 20px;
   }
-  .altar { padding: 4px 10px; }
-  .altar-eyebrow { font-size: .55rem; letter-spacing: .2em; }
-  .altar-name { font-size: 1.3rem; }
-  /* Reset the flow separators; draw one clean divider between the two columns. */
-  .altar + .altar::before { display: none; }
-  .altar:nth-child(even)::before {
-    content: ''; display: block;
-    position: absolute; left: 0; top: 12%; bottom: 12%;
-    width: 1px;
-    background: linear-gradient(180deg, transparent, rgba(255,255,255,.4), transparent);
-  }
+  .altar { flex: 1 1 0; min-width: 0; padding: 4px 4px; }
+  .altar-eyebrow { font-size: .42rem; letter-spacing: .09em; white-space: nowrap; }
+  .altar-name { font-size: clamp(.55rem, 3vw, 1.25rem); white-space: nowrap; }
+  .altar + .altar::before { display: block; }
 }
 
 /* Verse strip */
